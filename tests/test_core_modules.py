@@ -1,4 +1,4 @@
-"""Validation tests for checkpoints 1 to 6.
+"""Validation tests for the core preprocessing and matching modules.
 
 These tests use small synthetic data so they can run in Colab or locally before
 raw NSL-KDD and CICIDS2017 files are available.
