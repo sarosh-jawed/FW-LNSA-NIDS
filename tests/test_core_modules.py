@@ -29,7 +29,7 @@ from src.preprocessing import prepare_nsl_kdd, to_binary_label
 from src.representation import binary_median_split, validate_binary_matrix
 
 
-class CheckpointModuleTests(unittest.TestCase):
+class CoreModuleTests(unittest.TestCase):
     def test_label_conversion_is_case_insensitive(self) -> None:
         self.assertEqual(to_binary_label("normal"), 0)
         self.assertEqual(to_binary_label(" Normal "), 0)
