@@ -59,7 +59,12 @@ FW-LNSA-NIDS/
 │   ├── run_nsl_kdd_fw_lnsa.py
 │   ├── run_cicids2017_fw_lnsa.py
 │   ├── run_baselines.py
-│   └── make_figures.py
+│   ├── make_figures.py
+│   ├── validate_core_modules.py
+│   └── validate_fw_lnsa_pipeline.py
+├── tests/
+│   ├── test_core_modules.py
+│   └── test_fw_lnsa_pipeline.py
 ├── results/
 │   ├── tables/
 │   └── figures/
@@ -130,10 +135,29 @@ pip install -r requirements.txt
 
 ## How to Reproduce Results
 
-After the implementation modules are completed, the main NSL-KDD FW-LNSA experiment should run with:
+Validate the reusable modules and the integrated FW-LNSA pipeline first:
+
+```bash
+python scripts/validate_core_modules.py
+python scripts/validate_fw_lnsa_pipeline.py
+```
+
+The default NSL-KDD command uses the smoke profile so the complete pipeline can be checked safely before longer research runs:
 
 ```bash
 python scripts/run_nsl_kdd_fw_lnsa.py --config configs/nsl_kdd_fw_lnsa.yaml
+```
+
+Use the research profile for a controlled reduced grid:
+
+```bash
+python scripts/run_nsl_kdd_fw_lnsa.py --config configs/nsl_kdd_fw_lnsa.yaml --profile research
+```
+
+Use the full profile only in Colab or another suitable compute environment after the smoke and research profiles pass:
+
+```bash
+python scripts/run_nsl_kdd_fw_lnsa.py --config configs/nsl_kdd_fw_lnsa.yaml --profile full
 ```
 
 The CICIDS2017 experiment should run with:

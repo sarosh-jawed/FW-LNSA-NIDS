@@ -164,7 +164,8 @@ def map_nsl_kdd_attack_category(label: object) -> str:
 def _detect_separator(path: str | Path) -> str:
     """Detect whether an NSL-KDD file is comma separated or tab separated."""
 
-    first_line = Path(path).read_text(errors="ignore").splitlines()[0]
+    with Path(path).open("r", encoding="utf-8", errors="ignore") as handle:
+        first_line = handle.readline()
     if "\t" in first_line and first_line.count("\t") >= first_line.count(","):
         return "\t"
     return ","
@@ -182,11 +183,11 @@ def read_nsl_kdd_file(path: str | Path) -> pd.DataFrame:
         raise FileNotFoundError(f"NSL-KDD file not found: {file_path}")
 
     separator = _detect_separator(file_path)
-    df = pd.read_csv(file_path, names=NSL_KDD_COLUMNS, sep=separator, engine="python")
+    df = pd.read_csv(file_path, names=NSL_KDD_COLUMNS, sep=separator, engine="c")
 
     if df.shape[1] != len(NSL_KDD_COLUMNS):
         fallback = "\t" if separator == "," else ","
-        df = pd.read_csv(file_path, names=NSL_KDD_COLUMNS, sep=fallback, engine="python")
+        df = pd.read_csv(file_path, names=NSL_KDD_COLUMNS, sep=fallback, engine="c")
 
     if df.shape[1] != len(NSL_KDD_COLUMNS):
         raise ValueError(
@@ -277,19 +278,35 @@ def encode_and_align_train_test(
     *,
     categorical_columns: Sequence[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """One-hot encode train/test together and return aligned numeric matrices."""
+    """Fit categorical columns on training data and align test features safely.
+
+    Test-only categories are not added to the learned feature space. Their
+    categorical indicators remain zero, which avoids transductive test-set
+    information entering the training representation.
+    """
 
     categorical_columns = list(categorical_columns or [])
     present_categoricals = [col for col in categorical_columns if col in train_features.columns]
 
-    combined = pd.concat([train_features, test_features], axis=0, ignore_index=True)
-    combined_encoded = pd.get_dummies(combined, columns=present_categoricals, dtype=float)
-    combined_encoded = combined_encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
+    train_encoded = pd.get_dummies(
+        train_features,
+        columns=present_categoricals,
+        dtype=float,
+    )
+    test_encoded = pd.get_dummies(
+        test_features,
+        columns=[col for col in present_categoricals if col in test_features.columns],
+        dtype=float,
+    )
 
-    X_train = combined_encoded.iloc[: len(train_features)].reset_index(drop=True)
-    X_test = combined_encoded.iloc[len(train_features) :].reset_index(drop=True)
+    train_encoded = train_encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
+    test_encoded = test_encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
+    test_aligned = test_encoded.reindex(columns=train_encoded.columns, fill_value=0.0)
 
-    return X_train.astype(float), X_test.astype(float)
+    return (
+        train_encoded.reset_index(drop=True).astype(float),
+        test_aligned.reset_index(drop=True).astype(float),
+    )
 
 
 def clean_cicids2017_dataframe(

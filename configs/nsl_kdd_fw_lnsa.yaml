@@ -1,25 +1,122 @@
-dataset: nsl_kdd
+active_profile: smoke
+
+dataset:
+  name: nsl_kdd
+  task: binary
+
 paths:
   train_file: data/raw/nsl_kdd/KDDTrain+.txt
   test_file: data/raw/nsl_kdd/KDDTest+.txt
   output_dir: results
+
+preprocessing:
+  scale: true
+  max_self_samples: 10000
+
+feature_selection:
+  method: mutual_information
+  feature_sizes: [10, 20]
+  main_feature_size: 20
+  random_seed: 42
+  max_samples: null
+
+representation:
+  method: binary_median_split
+
 experiment:
-  task: binary
-  feature_sets: [10, 20]
-  main_feature_set: 20
-  feature_selection: mutual_information
-  representation: binary_median_split
   methods: [hamming, weighted_hamming, weighted_smc]
-  diagnostics: [jaccard]
   detector_budgets: [500, 1000, 2500, 5000]
   seeds: [42, 43, 44, 45, 46]
-  self_threshold_grid: [0.00, 0.05, 0.10, 0.15]
-  detection_threshold_grid: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
-metrics:
-  - accuracy
-  - precision
-  - recall
-  - f1
-  - fpr
-  - runtime
-  - retained_detectors
+  deduplicate_candidates: false
+  prediction_chunk_size: 250
+
+method_settings:
+  hamming:
+    threshold_scale: ratio
+    self_thresholds: [0.00, 0.05, 0.10, 0.15]
+    detection_thresholds: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+  weighted_hamming:
+    threshold_scale: direct
+    self_thresholds: [0.00, 0.05, 0.10, 0.15]
+    detection_thresholds: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+  weighted_smc:
+    threshold_scale: direct
+    self_thresholds: [0.90, 0.85, 0.80]
+    detection_thresholds: [0.90, 0.85, 0.80, 0.75]
+  jaccard:
+    threshold_scale: direct
+    self_thresholds: [0.80, 0.70]
+    detection_thresholds: [0.80, 0.70, 0.60]
+
+selection:
+  balanced_fpr_limit: 0.10
+
+outputs:
+  results_table: nsl_kdd_fw_lnsa_results.csv
+  method_summary: nsl_kdd_matching_method_summary.csv
+  balanced_configs: nsl_kdd_best_balanced_configs.csv
+  attack_category_analysis: nsl_kdd_attack_category_analysis.csv
+  selected_features: nsl_kdd_selected_features.csv
+
+profiles:
+  smoke:
+    feature_selection:
+      feature_sizes: [20]
+      main_feature_size: 20
+      max_samples: 10000
+    preprocessing:
+      max_self_samples: 2000
+    experiment:
+      methods: [hamming, weighted_hamming, weighted_smc]
+      detector_budgets: [50]
+      seeds: [42]
+    method_settings:
+      hamming:
+        threshold_scale: ratio
+        self_thresholds: [0.10]
+        detection_thresholds: [0.15]
+      weighted_hamming:
+        threshold_scale: direct
+        self_thresholds: [0.10]
+        detection_thresholds: [0.15]
+      weighted_smc:
+        threshold_scale: direct
+        self_thresholds: [0.80]
+        detection_thresholds: [0.75]
+
+  research:
+    feature_selection:
+      feature_sizes: [20]
+      main_feature_size: 20
+      max_samples: 50000
+    experiment:
+      methods: [hamming, weighted_hamming, weighted_smc, jaccard]
+      detector_budgets: [500, 1000]
+      seeds: [42, 43]
+    method_settings:
+      hamming:
+        threshold_scale: ratio
+        self_thresholds: [0.10, 0.15]
+        detection_thresholds: [0.15, 0.20]
+      weighted_hamming:
+        threshold_scale: direct
+        self_thresholds: [0.10, 0.15]
+        detection_thresholds: [0.15, 0.20]
+      weighted_smc:
+        threshold_scale: direct
+        self_thresholds: [0.85, 0.80]
+        detection_thresholds: [0.85, 0.80, 0.75]
+      jaccard:
+        threshold_scale: direct
+        self_thresholds: [0.80]
+        detection_thresholds: [0.80, 0.70]
+
+  full:
+    feature_selection:
+      feature_sizes: [10, 20]
+      main_feature_size: 20
+      max_samples: null
+    experiment:
+      methods: [hamming, weighted_hamming, weighted_smc, jaccard]
+      detector_budgets: [500, 1000, 2500, 5000]
+      seeds: [42, 43, 44, 45, 46]
