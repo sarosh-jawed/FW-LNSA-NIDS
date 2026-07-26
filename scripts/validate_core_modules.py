@@ -1,7 +1,7 @@
-"""Run checkpoint 1 to 6 validation tests.
+"""Run core module validation tests.
 
 Usage:
-    python scripts/validate_checkpoint_1_6.py
+    python scripts/validate_core_modules.py
 """
 
 from __future__ import annotations
