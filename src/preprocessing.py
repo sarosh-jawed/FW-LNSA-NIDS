@@ -10,10 +10,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Iterable, Iterator, Mapping, Sequence
+import zipfile
 
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -130,6 +133,7 @@ class PreparedDataset:
     test_attack_categories: pd.Series | None
     scaler: MinMaxScaler
     metadata: dict[str, object]
+    data_quality_report: pd.DataFrame | None = None
 
 
 def normalize_label(label: object) -> str:
@@ -309,6 +313,262 @@ def encode_and_align_train_test(
     )
 
 
+CICIDS2017_CATEGORY_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("DoS/DDoS", ("ddos", "dos hulk", "dos goldeneye", "dos slowloris", "dos slowhttptest")),
+    ("Brute Force", ("ftp-patator", "ssh-patator", "brute force")),
+    ("Web Attack", ("web attack", "sql injection", "xss")),
+    ("PortScan", ("portscan",)),
+    ("Bot", ("bot",)),
+    ("Infiltration", ("infiltration", "infilteration")),
+    ("Heartbleed", ("heartbleed",)),
+)
+
+
+@dataclass(frozen=True)
+class CICIDS2017Source:
+    """One CSV source, either an extracted file or a member inside an archive."""
+
+    display_name: str
+    path: Path
+    archive_member: str | None = None
+
+
+@dataclass
+class _PrioritySampler:
+    """Keep a deterministic, memory-bounded sample from streamed records."""
+
+    strategy: str
+    benign_label: str
+    max_benign_records: int
+    max_records_per_attack_label: int
+    max_total_records: int | None
+    random_seed: int
+
+    def __post_init__(self) -> None:
+        self._frames: dict[str, pd.DataFrame] = {}
+
+    def _quota(self, label: str) -> int:
+        if self.strategy == "global_cap":
+            if self.max_total_records is None:
+                raise ValueError("max_total_records is required for global_cap sampling.")
+            return self.max_total_records
+        if normalize_cicids2017_label(label) == normalize_cicids2017_label(self.benign_label):
+            return self.max_benign_records
+        return self.max_records_per_attack_label
+
+    def add(self, frame: pd.DataFrame) -> None:
+        if frame.empty:
+            return
+        groups = [("__global__", frame)] if self.strategy == "global_cap" else frame.groupby("__original_label__", sort=False)
+        for label, group in groups:
+            quota = self._quota(str(label))
+            existing = self._frames.get(str(label))
+            combined = group if existing is None else pd.concat([existing, group], ignore_index=True)
+            if len(combined) > quota:
+                combined = combined.nsmallest(quota, "__priority__")
+            self._frames[str(label)] = combined.reset_index(drop=True)
+
+    def build(self) -> pd.DataFrame:
+        if not self._frames:
+            return pd.DataFrame()
+        result = pd.concat(self._frames.values(), ignore_index=True)
+        return result.sort_values("__priority__", kind="stable").reset_index(drop=True)
+
+
+def normalize_cicids2017_label(label: object) -> str:
+    """Normalize CICIDS2017 labels while preserving their human-readable names."""
+
+    text = str(label).replace("\ufffd", "-").replace("\u0096", "-")
+    return " ".join(text.strip().split())
+
+
+def map_cicids2017_attack_category(label: object, benign_label: str = "BENIGN") -> str:
+    """Map original CICIDS2017 labels to stable paper-facing attack families."""
+
+    cleaned = normalize_cicids2017_label(label)
+    lowered = cleaned.lower()
+    if lowered == normalize_cicids2017_label(benign_label).lower():
+        return "Normal"
+    for category, patterns in CICIDS2017_CATEGORY_PATTERNS:
+        if any(pattern in lowered for pattern in patterns):
+            return category
+    return "Unknown"
+
+
+def _deduplicate_column_names(columns: Sequence[object]) -> list[str]:
+    """Strip whitespace and make duplicate column names explicit and stable."""
+
+    counts: dict[str, int] = {}
+    cleaned: list[str] = []
+    for raw in columns:
+        base = " ".join(str(raw).replace("\ufeff", "").strip().split())
+        counts[base] = counts.get(base, 0) + 1
+        cleaned.append(base if counts[base] == 1 else f"{base}__{counts[base]}")
+    return cleaned
+
+
+def discover_cicids2017_sources(
+    raw_dir: str | Path,
+    *,
+    archive_file: str | Path | None = None,
+) -> list[CICIDS2017Source]:
+    """Discover official CICIDS2017 machine-learning CSV sources.
+
+    The runner accepts either the official MachineLearningCSV.zip archive or an
+    extracted directory. Archive members are streamed directly, so extraction
+    is optional and no large temporary copy is required.
+    """
+
+    raw_path = Path(raw_dir)
+    archive_path = Path(archive_file) if archive_file else raw_path / "MachineLearningCSV.zip"
+
+    if archive_path.exists():
+        with zipfile.ZipFile(archive_path) as archive:
+            members = sorted(
+                name for name in archive.namelist()
+                if name.lower().endswith(".csv") and not name.endswith("/")
+            )
+        if not members:
+            raise ValueError(f"No CSV files were found inside {archive_path}.")
+        return [
+            CICIDS2017Source(display_name=Path(member).name, path=archive_path, archive_member=member)
+            for member in members
+        ]
+
+    if not raw_path.exists():
+        raise FileNotFoundError(
+            f"CICIDS2017 input not found. Expected archive {archive_path} or directory {raw_path}."
+        )
+
+    csv_files = sorted(path for path in raw_path.rglob("*.csv") if path.is_file())
+    if not csv_files:
+        raise ValueError(f"No CICIDS2017 CSV files were found under {raw_path}.")
+    return [CICIDS2017Source(display_name=path.name, path=path) for path in csv_files]
+
+
+def _iter_cicids2017_chunks(
+    source: CICIDS2017Source,
+    *,
+    chunk_size: int,
+    max_chunks: int | None,
+) -> Iterator[pd.DataFrame]:
+    read_options = {
+        "chunksize": chunk_size,
+        "low_memory": False,
+        "encoding_errors": "replace",
+    }
+
+    if source.archive_member is None:
+        reader = pd.read_csv(source.path, **read_options)
+        for index, chunk in enumerate(reader):
+            if max_chunks is not None and index >= max_chunks:
+                break
+            yield chunk
+        return
+
+    with zipfile.ZipFile(source.path) as archive:
+        with archive.open(source.archive_member) as handle:
+            reader = pd.read_csv(handle, **read_options)
+            for index, chunk in enumerate(reader):
+                if max_chunks is not None and index >= max_chunks:
+                    break
+                yield chunk
+
+
+def _clean_cicids2017_chunk(
+    chunk: pd.DataFrame,
+    *,
+    label_column: str,
+    benign_label: str,
+    source_name: str,
+    row_offset: int,
+    seen_hashes: set[int],
+    random_seed: int,
+    drop_duplicates: bool,
+) -> tuple[pd.DataFrame, dict[str, int]]:
+    """Clean one chunk without fitting statistics from future test records."""
+
+    cleaned = chunk.copy()
+    cleaned.columns = _deduplicate_column_names(cleaned.columns)
+    matching = [name for name in cleaned.columns if name.lower() == label_column.strip().lower()]
+    if not matching:
+        raise ValueError(f"Label column '{label_column}' was not found in {source_name}.")
+    resolved_label = matching[0]
+
+    stats = {
+        "rows_read": int(len(cleaned)),
+        "rows_missing_label_dropped": 0,
+        "rows_all_features_missing_dropped": 0,
+        "duplicate_rows_removed": 0,
+        "nonfinite_values_replaced": 0,
+        "nonnumeric_values_coerced": 0,
+        "rows_after_cleaning": 0,
+    }
+
+    raw_labels = cleaned[resolved_label]
+    valid_label_mask = raw_labels.notna() & raw_labels.astype(str).str.strip().ne("")
+    stats["rows_missing_label_dropped"] = int((~valid_label_mask).sum())
+    cleaned = cleaned.loc[valid_label_mask].copy()
+    raw_labels = cleaned[resolved_label].map(normalize_cicids2017_label)
+
+    features_raw = cleaned.drop(columns=[resolved_label], errors="ignore")
+    numeric_columns: dict[str, pd.Series] = {}
+    nonnumeric_values_coerced = 0
+    for name in features_raw.columns:
+        raw_column = features_raw[name]
+        converted = pd.to_numeric(raw_column, errors="coerce")
+        numeric_columns[name] = converted
+        if not is_numeric_dtype(raw_column.dtype):
+            meaningful = raw_column.notna() & raw_column.astype(str).str.strip().ne("")
+            nonnumeric_values_coerced += int((meaningful & converted.isna()).sum())
+    numeric = pd.DataFrame(numeric_columns, index=features_raw.index)
+    stats["nonnumeric_values_coerced"] = nonnumeric_values_coerced
+
+    numeric_values = numeric.to_numpy(dtype=float, copy=False)
+    nonfinite_mask = np.isinf(numeric_values)
+    stats["nonfinite_values_replaced"] = int(nonfinite_mask.sum())
+    if stats["nonfinite_values_replaced"]:
+        numeric = numeric.replace([np.inf, -np.inf], np.nan)
+
+    valid_feature_mask = ~numeric.isna().all(axis=1)
+    stats["rows_all_features_missing_dropped"] = int((~valid_feature_mask).sum())
+    numeric = numeric.loc[valid_feature_mask].reset_index(drop=True)
+    labels = raw_labels.loc[valid_feature_mask].reset_index(drop=True)
+
+    hash_frame = numeric.copy()
+    hash_frame["__label__"] = labels
+    row_hashes = pd.util.hash_pandas_object(hash_frame, index=False).to_numpy(dtype=np.uint64)
+
+    if drop_duplicates:
+        keep = np.ones(len(row_hashes), dtype=bool)
+        for idx, value in enumerate(row_hashes):
+            key = int(value)
+            if key in seen_hashes:
+                keep[idx] = False
+            else:
+                seen_hashes.add(key)
+        stats["duplicate_rows_removed"] = int((~keep).sum())
+        numeric = numeric.loc[keep].reset_index(drop=True)
+        labels = labels.loc[keep].reset_index(drop=True)
+        row_hashes = row_hashes[keep]
+
+    y = labels.map(lambda value: 0 if value.upper() == benign_label.upper() else 1).astype(np.int8)
+    categories = labels.map(lambda value: map_cicids2017_attack_category(value, benign_label))
+    source_rows = np.arange(row_offset, row_offset + len(labels), dtype=np.int64)
+    seed_mix = np.uint64((int(random_seed) * 0x9E3779B1) & 0xFFFFFFFFFFFFFFFF)
+    priorities = row_hashes ^ seed_mix
+
+    result = numeric.reset_index(drop=True)
+    result["__binary_label__"] = y.to_numpy()
+    result["__original_label__"] = labels.to_numpy()
+    result["__attack_category__"] = categories.to_numpy()
+    result["__source_file__"] = source_name
+    result["__source_row__"] = source_rows
+    result["__priority__"] = priorities
+    stats["rows_after_cleaning"] = int(len(result))
+    return result, stats
+
+
 def clean_cicids2017_dataframe(
     df: pd.DataFrame,
     *,
@@ -316,44 +576,26 @@ def clean_cicids2017_dataframe(
     benign_label: str = "BENIGN",
     drop_duplicates: bool = True,
 ) -> tuple[pd.DataFrame, np.ndarray, pd.Series]:
-    """Clean one CICIDS2017 dataframe for binary experiments.
+    """Clean one in-memory CICIDS2017 dataframe for tests and small studies."""
 
-    This helper prepares a single dataframe. A future runner can decide whether
-    to split by file/day or use a stratified train/test split.
-    """
+    frame, _stats = _clean_cicids2017_chunk(
+        df,
+        label_column=label_column,
+        benign_label=benign_label,
+        source_name="in_memory",
+        row_offset=0,
+        seen_hashes=set(),
+        random_seed=42,
+        drop_duplicates=drop_duplicates,
+    )
+    helper_columns = [name for name in frame.columns if name.startswith("__")]
+    X = frame.drop(columns=helper_columns).copy()
+    y = frame["__binary_label__"].to_numpy(dtype=np.int8)
+    original = frame["__original_label__"].astype(str).reset_index(drop=True)
 
-    cleaned = df.copy()
-    cleaned.columns = [str(col).strip() for col in cleaned.columns]
-
-    if label_column not in cleaned.columns:
-        matching = [col for col in cleaned.columns if col.lower() == label_column.lower()]
-        if not matching:
-            raise ValueError(f"Label column not found: {label_column}")
-        label_column = matching[0]
-
-    cleaned = cleaned.replace([np.inf, -np.inf, "Infinity", "inf", "-inf"], np.nan)
-    cleaned = cleaned.dropna(subset=[label_column])
-
-    original_labels = cleaned[label_column].astype(str).str.strip().copy()
-    y = original_labels.apply(lambda value: 0 if value.upper() == benign_label.upper() else 1).to_numpy(dtype=np.int8)
-
-    X = cleaned.drop(columns=[label_column], errors="ignore")
-    X = X.select_dtypes(include=[np.number]).replace([np.inf, -np.inf], np.nan)
-    X = X.fillna(X.median(numeric_only=True)).fillna(0.0)
-
-    if drop_duplicates:
-        before = len(X)
-        combined = X.copy()
-        combined["__label__"] = y
-        combined["__original_label__"] = original_labels.to_numpy()
-        combined = combined.drop_duplicates().reset_index(drop=True)
-        original_labels = combined["__original_label__"].copy()
-        y = combined["__label__"].to_numpy(dtype=np.int8)
-        X = combined.drop(columns=["__label__", "__original_label__"])
-        if len(X) == 0 and before > 0:
-            raise ValueError("CICIDS2017 cleaning removed all rows.")
-
-    return X.astype(float).reset_index(drop=True), y, original_labels.reset_index(drop=True)
+    medians = X.median(numeric_only=True)
+    X = X.fillna(medians).fillna(0.0).astype(float).reset_index(drop=True)
+    return X, y, original
 
 
 def load_cicids2017_csv_files(
@@ -362,28 +604,276 @@ def load_cicids2017_csv_files(
     label_column: str = "Label",
     benign_label: str = "BENIGN",
 ) -> tuple[pd.DataFrame, np.ndarray, pd.Series]:
-    """Load and clean multiple CICIDS2017 CSV files as one dataset."""
+    """Load a small collection of extracted CICIDS2017 CSV files."""
 
-    frames = []
-    labels = []
-    original_labels = []
-
+    frames: list[pd.DataFrame] = []
+    labels: list[np.ndarray] = []
+    original_labels: list[pd.Series] = []
     for file in files:
-        raw = pd.read_csv(file)
-        X_part, y_part, label_part = clean_cicids2017_dataframe(
+        raw = pd.read_csv(file, low_memory=False)
+        X_part, y_part, original_part = clean_cicids2017_dataframe(
             raw,
             label_column=label_column,
             benign_label=benign_label,
         )
         frames.append(X_part)
         labels.append(y_part)
-        original_labels.append(label_part)
+        original_labels.append(original_part)
 
     if not frames:
         raise ValueError("No CICIDS2017 files were provided.")
 
-    X = pd.concat(frames, axis=0, ignore_index=True).fillna(0.0)
-    y = np.concatenate(labels).astype(np.int8)
-    original = pd.concat(original_labels, axis=0, ignore_index=True)
+    columns = frames[0].columns
+    aligned = [frame.reindex(columns=columns, fill_value=0.0) for frame in frames]
+    return (
+        pd.concat(aligned, ignore_index=True).astype(float),
+        np.concatenate(labels).astype(np.int8),
+        pd.concat(original_labels, ignore_index=True),
+    )
 
-    return X, y, original
+
+def _safe_stratification_labels(
+    original_labels: pd.Series,
+    y: np.ndarray,
+    *,
+    strategy: str,
+) -> np.ndarray:
+    if strategy == "binary":
+        return y
+    counts = original_labels.value_counts()
+    if len(counts) > 1 and int(counts.min()) >= 2:
+        return original_labels.to_numpy()
+    return y
+
+
+def prepare_cicids2017(
+    raw_dir: str | Path,
+    *,
+    archive_file: str | Path | None = None,
+    label_column: str = "Label",
+    benign_label: str = "BENIGN",
+    chunk_size: int = 25_000,
+    max_chunks_per_file: int | None = None,
+    drop_duplicates: bool = True,
+    sampling_strategy: str = "per_label_cap",
+    max_benign_records: int = 20_000,
+    max_records_per_attack_label: int = 5_000,
+    max_total_records: int | None = None,
+    sampling_seed: int = 42,
+    test_size: float = 0.30,
+    split_seed: int = 42,
+    stratify_by: str = "original_label",
+    scale: bool = True,
+) -> PreparedDataset:
+    """Prepare CICIDS2017 using streaming, bounded sampling, and train-only fitting.
+
+    Exact duplicates are removed before splitting. Numeric imputation medians and
+    scaling parameters are fitted on the training partition only. The resulting
+    data-quality report records every cleaning and sampling decision used by the
+    experiment runner.
+    """
+
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be positive.")
+    if max_chunks_per_file is not None and max_chunks_per_file <= 0:
+        raise ValueError("max_chunks_per_file must be positive or null.")
+    if sampling_strategy not in {"per_label_cap", "global_cap"}:
+        raise ValueError("sampling_strategy must be 'per_label_cap' or 'global_cap'.")
+    if max_benign_records <= 0 or max_records_per_attack_label <= 0:
+        raise ValueError("Per-label sampling quotas must be positive.")
+    if sampling_strategy == "global_cap" and (max_total_records is None or max_total_records <= 0):
+        raise ValueError("max_total_records must be positive for global_cap sampling.")
+    if not 0.0 < test_size < 1.0:
+        raise ValueError("test_size must be between 0 and 1.")
+    if stratify_by not in {"original_label", "binary"}:
+        raise ValueError("stratify_by must be 'original_label' or 'binary'.")
+
+    sources = discover_cicids2017_sources(raw_dir, archive_file=archive_file)
+    sampler = _PrioritySampler(
+        strategy=sampling_strategy,
+        benign_label=benign_label,
+        max_benign_records=max_benign_records,
+        max_records_per_attack_label=max_records_per_attack_label,
+        max_total_records=max_total_records,
+        random_seed=sampling_seed,
+    )
+    seen_hashes: set[int] = set()
+    report_rows: list[dict[str, object]] = []
+
+    for source in sources:
+        source_stats: dict[str, object] = {
+            "record_type": "source",
+            "source_file": source.display_name,
+            "archive_member": source.archive_member or "",
+            "scan_complete": max_chunks_per_file is None,
+            "chunks_read": 0,
+            "rows_read": 0,
+            "rows_missing_label_dropped": 0,
+            "rows_all_features_missing_dropped": 0,
+            "duplicate_rows_removed": 0,
+            "nonfinite_values_replaced": 0,
+            "nonnumeric_values_coerced": 0,
+            "rows_after_cleaning": 0,
+            "rows_retained_in_sample": 0,
+        }
+        row_offset = 0
+        for chunk in _iter_cicids2017_chunks(
+            source,
+            chunk_size=chunk_size,
+            max_chunks=max_chunks_per_file,
+        ):
+            cleaned, chunk_stats = _clean_cicids2017_chunk(
+                chunk,
+                label_column=label_column,
+                benign_label=benign_label,
+                source_name=source.display_name,
+                row_offset=row_offset,
+                seen_hashes=seen_hashes,
+                random_seed=sampling_seed,
+                drop_duplicates=drop_duplicates,
+            )
+            sampler.add(cleaned)
+            source_stats["chunks_read"] = int(source_stats["chunks_read"]) + 1
+            for key, value in chunk_stats.items():
+                source_stats[key] = int(source_stats[key]) + int(value)
+            row_offset += len(chunk)
+        report_rows.append(source_stats)
+
+    sampled = sampler.build()
+    if sampled.empty:
+        raise ValueError("CICIDS2017 preprocessing produced no usable records.")
+
+    retained_by_source = sampled["__source_file__"].value_counts()
+    for row in report_rows:
+        row["rows_retained_in_sample"] = int(retained_by_source.get(row["source_file"], 0))
+
+    helper_columns = [name for name in sampled.columns if name.startswith("__")]
+    feature_columns = [name for name in sampled.columns if name not in helper_columns]
+    X_all = sampled[feature_columns].copy()
+    y_all = sampled["__binary_label__"].to_numpy(dtype=np.int8)
+    original_all = sampled["__original_label__"].astype(str).reset_index(drop=True)
+    categories_all = sampled["__attack_category__"].astype(str).reset_index(drop=True)
+
+    indices = np.arange(len(sampled))
+    stratify_labels = _safe_stratification_labels(
+        original_all,
+        y_all,
+        strategy=stratify_by,
+    )
+    train_idx, test_idx = train_test_split(
+        indices,
+        test_size=test_size,
+        random_state=split_seed,
+        shuffle=True,
+        stratify=stratify_labels,
+    )
+
+    X_train_raw = X_all.iloc[train_idx].reset_index(drop=True)
+    X_test_raw = X_all.iloc[test_idx].reset_index(drop=True)
+    y_train = y_all[train_idx]
+    y_test = y_all[test_idx]
+    train_original = original_all.iloc[train_idx].reset_index(drop=True)
+    test_original = original_all.iloc[test_idx].reset_index(drop=True)
+    train_categories = categories_all.iloc[train_idx].reset_index(drop=True)
+    test_categories = categories_all.iloc[test_idx].reset_index(drop=True)
+
+    train_medians = X_train_raw.median(numeric_only=True)
+    all_missing_columns = train_medians[train_medians.isna()].index.tolist()
+    if all_missing_columns:
+        X_train_raw = X_train_raw.drop(columns=all_missing_columns)
+        X_test_raw = X_test_raw.drop(columns=all_missing_columns)
+        train_medians = X_train_raw.median(numeric_only=True)
+
+    train_missing_before = int(X_train_raw.isna().to_numpy().sum())
+    test_missing_before = int(X_test_raw.isna().to_numpy().sum())
+    X_train_imputed = X_train_raw.fillna(train_medians).fillna(0.0).astype(float)
+    X_test_imputed = X_test_raw.fillna(train_medians).fillna(0.0).astype(float)
+
+    scaler = MinMaxScaler()
+    if scale:
+        X_train = pd.DataFrame(
+            scaler.fit_transform(X_train_imputed),
+            columns=X_train_imputed.columns,
+        )
+        X_test = pd.DataFrame(
+            scaler.transform(X_test_imputed),
+            columns=X_test_imputed.columns,
+        )
+    else:
+        scaler.fit(X_train_imputed)
+        X_train = X_train_imputed.reset_index(drop=True)
+        X_test = X_test_imputed.reset_index(drop=True)
+
+    summary = {
+        "record_type": "summary",
+        "source_file": "ALL_SOURCES",
+        "archive_member": "",
+        "scan_complete": all(bool(row["scan_complete"]) for row in report_rows),
+        "chunks_read": sum(int(row["chunks_read"]) for row in report_rows),
+        "rows_read": sum(int(row["rows_read"]) for row in report_rows),
+        "rows_missing_label_dropped": sum(int(row["rows_missing_label_dropped"]) for row in report_rows),
+        "rows_all_features_missing_dropped": sum(int(row["rows_all_features_missing_dropped"]) for row in report_rows),
+        "duplicate_rows_removed": sum(int(row["duplicate_rows_removed"]) for row in report_rows),
+        "nonfinite_values_replaced": sum(int(row["nonfinite_values_replaced"]) for row in report_rows),
+        "nonnumeric_values_coerced": sum(int(row["nonnumeric_values_coerced"]) for row in report_rows),
+        "rows_after_cleaning": sum(int(row["rows_after_cleaning"]) for row in report_rows),
+        "rows_retained_in_sample": int(len(sampled)),
+        "train_records": int(len(X_train)),
+        "test_records": int(len(X_test)),
+        "train_missing_values_imputed": train_missing_before,
+        "test_missing_values_imputed": test_missing_before,
+        "all_missing_training_columns_removed": len(all_missing_columns),
+    }
+    label_rows: list[dict[str, object]] = []
+    for label in sorted(original_all.unique()):
+        all_count = int((original_all == label).sum())
+        train_count = int((train_original == label).sum())
+        test_count = int((test_original == label).sum())
+        label_rows.append({
+            "record_type": "label_distribution",
+            "source_file": "ALL_SOURCES",
+            "original_label": label,
+            "attack_category": map_cicids2017_attack_category(label, benign_label),
+            "binary_label": 0 if label.upper() == benign_label.upper() else 1,
+            "rows_retained_in_sample": all_count,
+            "train_records": train_count,
+            "test_records": test_count,
+        })
+    quality_report = pd.DataFrame([*report_rows, summary, *label_rows])
+
+    metadata: dict[str, object] = {
+        "dataset": "CICIDS2017",
+        "source_files": len(sources),
+        "scan_complete": bool(summary["scan_complete"]),
+        "sampled_records": int(len(sampled)),
+        "train_records": int(len(X_train)),
+        "test_records": int(len(X_test)),
+        "encoded_features": int(X_train.shape[1]),
+        "train_normal_records": int(np.sum(y_train == 0)),
+        "train_attack_records": int(np.sum(y_train == 1)),
+        "test_normal_records": int(np.sum(y_test == 0)),
+        "test_attack_records": int(np.sum(y_test == 1)),
+        "split_strategy": f"stratified_random:{stratify_by}",
+        "test_size": float(test_size),
+        "sampling_strategy": sampling_strategy,
+        "sampling_seed": int(sampling_seed),
+        "split_seed": int(split_seed),
+        "max_benign_records": int(max_benign_records),
+        "max_records_per_attack_label": int(max_records_per_attack_label),
+        "max_total_records": max_total_records,
+        "removed_all_missing_columns": all_missing_columns,
+    }
+
+    return PreparedDataset(
+        X_train=X_train,
+        X_test=X_test,
+        y_train=y_train,
+        y_test=y_test,
+        train_original_labels=train_original,
+        test_original_labels=test_original,
+        train_attack_categories=train_categories,
+        test_attack_categories=test_categories,
+        scaler=scaler,
+        metadata=metadata,
+        data_quality_report=quality_report,
+    )

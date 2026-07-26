@@ -61,10 +61,12 @@ FW-LNSA-NIDS/
 │   ├── run_baselines.py
 │   ├── make_figures.py
 │   ├── validate_core_modules.py
-│   └── validate_fw_lnsa_pipeline.py
+│   ├── validate_fw_lnsa_pipeline.py
+│   └── validate_cicids2017_pipeline.py
 ├── tests/
 │   ├── test_core_modules.py
-│   └── test_fw_lnsa_pipeline.py
+│   ├── test_fw_lnsa_pipeline.py
+│   └── test_cicids2017_pipeline.py
 ├── results/
 │   ├── tables/
 │   └── figures/
@@ -93,12 +95,19 @@ Required datasets before manuscript writing:
      - attack-category analysis for Normal, DoS, Probe, R2L, and U2R
 
 2. **CICIDS2017**
-   - Expected format:
-     - machine-learning CSV flow files
+   - Expected input:
+     - the official `MachineLearningCSV.zip` archive, or the extracted machine-learning CSV files
    - Purpose:
      - modern validation dataset
      - binary benign vs attack evaluation
-     - optional attack-category analysis if labels are clean enough
+     - attack-family analysis using the preserved original labels
+   - Reproducibility controls:
+     - chunked archive streaming
+     - exact-duplicate removal before splitting
+     - deterministic per-label sampling
+     - stratified train/test splitting
+     - train-only imputation and scaling
+     - saved data-quality report
 
 Place local dataset files under:
 
@@ -140,6 +149,7 @@ Validate the reusable modules and the integrated FW-LNSA pipeline first:
 ```bash
 python scripts/validate_core_modules.py
 python scripts/validate_fw_lnsa_pipeline.py
+python scripts/validate_cicids2017_pipeline.py
 ```
 
 The default NSL-KDD command uses the smoke profile so the complete pipeline can be checked safely before longer research runs:
@@ -160,10 +170,22 @@ Use the full profile only in Colab or another suitable compute environment after
 python scripts/run_nsl_kdd_fw_lnsa.py --config configs/nsl_kdd_fw_lnsa.yaml --profile full
 ```
 
-The CICIDS2017 experiment should run with:
+The default CICIDS2017 command uses a bounded smoke profile that streams directly from the official archive:
 
 ```bash
-python scripts/run_cicids2017_fw_lnsa.py --config configs/cicids2017_fw_lnsa.yaml
+python scripts/run_cicids2017_fw_lnsa.py --config configs/cicids2017_fw_lnsa.yaml --profile smoke
+```
+
+Use the research profile in Colab after validation passes:
+
+```bash
+python scripts/run_cicids2017_fw_lnsa.py --config configs/cicids2017_fw_lnsa.yaml --profile research
+```
+
+Use the full profile only after reviewing the research profile outputs:
+
+```bash
+python scripts/run_cicids2017_fw_lnsa.py --config configs/cicids2017_fw_lnsa.yaml --profile full
 ```
 
 Baseline models should run with:
@@ -210,25 +232,31 @@ Primary settings:
 
 ### CICIDS2017 FW-LNSA
 
-Required output files:
+FW-LNSA output files:
 
 ```text
 results/tables/cicids2017_fw_lnsa_results.csv
-results/tables/cicids2017_baseline_results.csv
-results/tables/cicids2017_fw_lnsa_vs_baselines.csv
-results/figures/cicids2017_method_comparison.png
-results/figures/cicids2017_fw_lnsa_vs_baselines.png
+results/tables/cicids2017_matching_method_summary.csv
+results/tables/cicids2017_best_balanced_configs.csv
+results/tables/cicids2017_attack_category_analysis.csv
+results/tables/cicids2017_selected_features.csv
+results/tables/cicids2017_data_quality_report.csv
 ```
 
-CICIDS2017 preprocessing must document handling of:
+The data pipeline documents and validates:
 
-- whitespace in column names
-- NaN values
-- `inf`, `-inf`, and `Infinity`
-- duplicate or invalid rows
-- BENIGN vs attack label conversion
-- possible class imbalance
-- train-only scaling
+- whitespace and duplicate-column cleanup
+- missing labels and all-missing feature rows
+- `inf`, `-inf`, `Infinity`, and invalid numeric values
+- exact duplicate rows before train/test splitting
+- `BENIGN` versus attack conversion
+- preserved original attack labels and stable attack families
+- deterministic class-aware sampling
+- stratified train/test splitting
+- training-only median imputation and scaling
+- source-file and aggregate data-quality counts
+
+Baseline and comparison tables are added in the next implementation package.
 
 ## Baseline Models
 

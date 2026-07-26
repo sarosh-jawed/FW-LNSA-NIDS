@@ -11,7 +11,8 @@ data/
 │   │   ├── KDDTrain+.txt
 │   │   └── KDDTest+.txt
 │   └── cicids2017/
-│       └── <CICIDS2017 machine-learning CSV files>
+│       ├── MachineLearningCSV.zip
+│       └── <optional extracted CSV files>
 ├── interim/
 └── processed/
 ```
@@ -36,17 +37,22 @@ Processing notes to document later:
 
 Expected input:
 
-- machine-learning CSV flow files
+- official `MachineLearningCSV.zip`, or its extracted CSV flow files
 
-Processing notes to document later:
+Implemented processing controls:
 
-- strip whitespace from column names
-- replace `Infinity`, `inf`, and `-inf`
-- handle NaN values
-- remove invalid rows and leakage-prone identifiers if present
+- stream CSV members from the ZIP archive in bounded chunks
+- strip whitespace and disambiguate duplicate column names
+- detect the label column case-insensitively
+- replace nonfinite values and coerce invalid numeric values to missing
+- remove rows with missing labels or no usable feature values
+- remove exact duplicate feature-label rows before splitting
 - convert `BENIGN` to 0 and all attacks to 1
-- preserve original attack labels where possible
-- fit scaling only on training data
+- preserve original labels and map them to stable attack families
+- use deterministic per-label sampling to control memory and class imbalance
+- create a reproducible stratified train/test split
+- fit imputation medians and scaling only on training data
+- save a source-level and aggregate data-quality report
 
 ## Dataset rule
 
