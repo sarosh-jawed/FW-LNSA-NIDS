@@ -1,0 +1,25 @@
+dataset: nsl_kdd
+paths:
+  train_file: data/raw/nsl_kdd/KDDTrain+.txt
+  test_file: data/raw/nsl_kdd/KDDTest+.txt
+  output_dir: results
+experiment:
+  task: binary
+  feature_sets: [10, 20]
+  main_feature_set: 20
+  feature_selection: mutual_information
+  representation: binary_median_split
+  methods: [hamming, weighted_hamming, weighted_smc]
+  diagnostics: [jaccard]
+  detector_budgets: [500, 1000, 2500, 5000]
+  seeds: [42, 43, 44, 45, 46]
+  self_threshold_grid: [0.00, 0.05, 0.10, 0.15]
+  detection_threshold_grid: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+metrics:
+  - accuracy
+  - precision
+  - recall
+  - f1
+  - fpr
+  - runtime
+  - retained_detectors

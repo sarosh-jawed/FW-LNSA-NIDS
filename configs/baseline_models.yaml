@@ -1,0 +1,21 @@
+datasets: [nsl_kdd, cicids2017]
+baselines:
+  logistic_regression:
+    enabled: true
+    max_iter: 1000
+  decision_tree:
+    enabled: true
+    random_state: 42
+  random_forest:
+    enabled: true
+    n_estimators: 200
+    random_state: 42
+  isolation_forest:
+    enabled: true
+    n_estimators: 200
+    random_state: 42
+  xgboost:
+    enabled: false
+  lightgbm:
+    enabled: false
+metrics: [accuracy, precision, recall, f1, fpr, runtime]

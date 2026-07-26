@@ -1,0 +1,18 @@
+dataset: cicids2017
+paths:
+  raw_dir: data/raw/cicids2017
+  output_dir: results
+experiment:
+  task: binary
+  feature_sets: [20]
+  feature_selection: mutual_information
+  representation: binary_median_split
+  methods: [hamming, weighted_hamming, weighted_smc]
+  detector_budgets: [500, 1000, 2500, 5000]
+  seeds: [42, 43, 44, 45, 46]
+cleaning:
+  strip_column_whitespace: true
+  replace_infinity: true
+  drop_missing_labels: true
+  label_column: Label
+  benign_label: BENIGN

@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data: do not commit raw or processed datasets
+data/raw/
+data/interim/
+data/processed/
+*.pcap
+*.pcapng
+*.parquet
+*.feather
+*.h5
+
+# Large outputs / temporary experiment artifacts
+results/raw_results/
+results/tmp/
+*.npy
+*.npz
+*.pkl
+*.joblib
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
