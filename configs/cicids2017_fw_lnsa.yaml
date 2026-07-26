@@ -1,18 +1,164 @@
-dataset: cicids2017
+# Reproducible CICIDS2017 configuration for FW-LNSA.
+# Raw data is streamed from the official MachineLearningCSV.zip archive.
+
+active_profile: smoke
+
+dataset:
+  name: cicids2017
+  task: binary
+  benign_class: BENIGN
+
 paths:
   raw_dir: data/raw/cicids2017
+  archive_file: data/raw/cicids2017/MachineLearningCSV.zip
   output_dir: results
-experiment:
-  task: binary
-  feature_sets: [20]
-  feature_selection: mutual_information
-  representation: binary_median_split
-  methods: [hamming, weighted_hamming, weighted_smc]
-  detector_budgets: [500, 1000, 2500, 5000]
-  seeds: [42, 43, 44, 45, 46]
-cleaning:
-  strip_column_whitespace: true
-  replace_infinity: true
-  drop_missing_labels: true
+
+preprocessing:
   label_column: Label
   benign_label: BENIGN
+  chunk_size: 25000
+  max_chunks_per_file: 3
+  drop_duplicates: true
+  scale: true
+  max_self_samples: 2000
+  sampling:
+    strategy: per_label_cap
+    max_benign_records: 3000
+    max_records_per_attack_label: 500
+    max_total_records: null
+    random_seed: 42
+  split:
+    strategy: stratified_random
+    stratify_by: original_label
+    test_size: 0.30
+    random_seed: 42
+
+feature_selection:
+  method: mutual_information
+  feature_sizes: [20]
+  main_feature_size: 20
+  random_seed: 42
+  max_samples: null
+
+representation:
+  method: binary_median_split
+
+experiment:
+  methods: [hamming, weighted_hamming, weighted_smc]
+  detector_budgets: [50]
+  seeds: [42]
+  deduplicate_candidates: true
+  prediction_chunk_size: 250
+
+method_settings:
+  hamming:
+    threshold_scale: ratio
+    self_thresholds: [0.10]
+    detection_thresholds: [0.20]
+  weighted_hamming:
+    threshold_scale: direct
+    self_thresholds: [0.10]
+    detection_thresholds: [0.20]
+  weighted_smc:
+    threshold_scale: direct
+    self_thresholds: [0.80]
+    detection_thresholds: [0.75]
+  jaccard:
+    threshold_scale: direct
+    self_thresholds: [0.80]
+    detection_thresholds: [0.70]
+
+selection:
+  balanced_fpr_limit: 0.10
+
+outputs:
+  results_table: cicids2017_fw_lnsa_results.csv
+  method_summary: cicids2017_matching_method_summary.csv
+  balanced_configs: cicids2017_best_balanced_configs.csv
+  attack_category_analysis: cicids2017_attack_category_analysis.csv
+  selected_features: cicids2017_selected_features.csv
+  data_quality_report: cicids2017_data_quality_report.csv
+
+profiles:
+  smoke:
+    preprocessing:
+      chunk_size: 25000
+      max_chunks_per_file: 3
+      max_self_samples: 2000
+      sampling:
+        strategy: per_label_cap
+        max_benign_records: 3000
+        max_records_per_attack_label: 500
+        max_total_records: null
+    feature_selection:
+      feature_sizes: [20]
+      main_feature_size: 20
+      max_samples: null
+    experiment:
+      methods: [hamming, weighted_hamming, weighted_smc]
+      detector_budgets: [50]
+      seeds: [42]
+
+  research:
+    preprocessing:
+      chunk_size: 50000
+      max_chunks_per_file: null
+      max_self_samples: 10000
+      sampling:
+        strategy: global_cap
+        max_benign_records: 30000
+        max_records_per_attack_label: 7500
+        max_total_records: 120000
+    feature_selection:
+      feature_sizes: [10, 20]
+      main_feature_size: 20
+      max_samples: 60000
+    experiment:
+      methods: [hamming, weighted_hamming, weighted_smc]
+      detector_budgets: [500, 1000]
+      seeds: [42, 43]
+    method_settings:
+      hamming:
+        threshold_scale: ratio
+        self_thresholds: [0.05, 0.10, 0.15]
+        detection_thresholds: [0.10, 0.15, 0.20, 0.25]
+      weighted_hamming:
+        threshold_scale: direct
+        self_thresholds: [0.05, 0.10, 0.15]
+        detection_thresholds: [0.10, 0.15, 0.20, 0.25]
+      weighted_smc:
+        threshold_scale: direct
+        self_thresholds: [0.85, 0.80, 0.75]
+        detection_thresholds: [0.85, 0.80, 0.75, 0.70]
+
+  full:
+    preprocessing:
+      chunk_size: 50000
+      max_chunks_per_file: null
+      max_self_samples: 20000
+      sampling:
+        strategy: global_cap
+        max_benign_records: 100000
+        max_records_per_attack_label: 25000
+        max_total_records: 300000
+    feature_selection:
+      feature_sizes: [10, 20]
+      main_feature_size: 20
+      max_samples: 150000
+    experiment:
+      methods: [hamming, weighted_hamming, weighted_smc]
+      detector_budgets: [500, 1000, 2500, 5000]
+      seeds: [42, 43, 44, 45, 46]
+    method_settings:
+      hamming:
+        threshold_scale: ratio
+        self_thresholds: [0.05, 0.10, 0.15]
+        detection_thresholds: [0.10, 0.15, 0.20, 0.25, 0.30]
+      weighted_hamming:
+        threshold_scale: direct
+        self_thresholds: [0.05, 0.10, 0.15]
+        detection_thresholds: [0.10, 0.15, 0.20, 0.25, 0.30]
+      weighted_smc:
+        threshold_scale: direct
+        self_thresholds: [0.85, 0.80, 0.75]
+        detection_thresholds: [0.85, 0.80, 0.75, 0.70]

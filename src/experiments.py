@@ -13,7 +13,7 @@ import pandas as pd
 from .evaluation import attack_category_analysis, evaluate_binary_classification
 from .feature_selection import FeatureSelectionResult, mutual_information_feature_selection
 from .fw_lnsa import FWLNSA
-from .preprocessing import PreparedDataset, prepare_nsl_kdd
+from .preprocessing import PreparedDataset, prepare_cicids2017, prepare_nsl_kdd
 from .representation import BinaryRepresentationResult, binary_median_split
 from .utils import ensure_dir, save_dataframe
 
@@ -45,6 +45,7 @@ class ExperimentOutputs:
     balanced_configs: pd.DataFrame
     attack_category_analysis: pd.DataFrame
     selected_features: pd.DataFrame
+    data_quality_report: pd.DataFrame
     output_paths: dict[str, Path]
 
 
@@ -424,9 +425,10 @@ def save_experiment_outputs(
     balanced_configs: pd.DataFrame,
     category_analysis: pd.DataFrame,
     selected_features: pd.DataFrame,
+    data_quality_report: pd.DataFrame | None,
     config: Mapping[str, Any],
 ) -> dict[str, Path]:
-    """Save all required NSL-KDD tables using configured filenames."""
+    """Save configured FW-LNSA tables for either supported dataset."""
 
     output_dir = ensure_dir(config["paths"]["output_dir"])
     tables_dir = ensure_dir(output_dir / "tables")
@@ -454,10 +456,16 @@ def save_experiment_outputs(
             tables_dir / output_names["selected_features"],
         ),
     }
+    quality_name = output_names.get("data_quality_report")
+    if quality_name and data_quality_report is not None:
+        paths["data_quality_report"] = save_dataframe(
+            data_quality_report,
+            tables_dir / quality_name,
+        )
     return paths
 
 
-def run_prepared_nsl_kdd_experiments(
+def run_prepared_fw_lnsa_experiments(
     dataset: PreparedDataset,
     config: Mapping[str, Any],
     *,
@@ -465,7 +473,7 @@ def run_prepared_nsl_kdd_experiments(
     progress_callback: ProgressCallback | None = None,
     save_outputs: bool = True,
 ) -> ExperimentOutputs:
-    """Run a complete experiment package from an already prepared dataset."""
+    """Run a complete FW-LNSA experiment package from a prepared dataset."""
 
     results, prepared_sets = run_experiment_grid(
         dataset,
@@ -495,6 +503,7 @@ def run_prepared_nsl_kdd_experiments(
             balanced_configs=balanced_configs,
             category_analysis=category_analysis,
             selected_features=selected_features,
+            data_quality_report=dataset.data_quality_report,
             config=config,
         )
 
@@ -504,7 +513,32 @@ def run_prepared_nsl_kdd_experiments(
         balanced_configs=balanced_configs,
         attack_category_analysis=category_analysis,
         selected_features=selected_features,
+        data_quality_report=(
+            dataset.data_quality_report.copy()
+            if dataset.data_quality_report is not None
+            else pd.DataFrame()
+        ),
         output_paths=output_paths,
+    )
+
+
+
+def run_prepared_nsl_kdd_experiments(
+    dataset: PreparedDataset,
+    config: Mapping[str, Any],
+    *,
+    max_runs: int | None = None,
+    progress_callback: ProgressCallback | None = None,
+    save_outputs: bool = True,
+) -> ExperimentOutputs:
+    """Backward-compatible NSL-KDD wrapper for the generic prepared runner."""
+
+    return run_prepared_fw_lnsa_experiments(
+        dataset,
+        config,
+        max_runs=max_runs,
+        progress_callback=progress_callback,
+        save_outputs=save_outputs,
     )
 
 
@@ -522,7 +556,48 @@ def run_nsl_kdd_experiments(
         paths["test_file"],
         scale=bool(config["preprocessing"].get("scale", True)),
     )
-    return run_prepared_nsl_kdd_experiments(
+    return run_prepared_fw_lnsa_experiments(
+        dataset,
+        config,
+        max_runs=max_runs,
+        progress_callback=progress_callback,
+        save_outputs=True,
+    )
+
+
+
+def run_cicids2017_experiments(
+    config: Mapping[str, Any],
+    *,
+    max_runs: int | None = None,
+    progress_callback: ProgressCallback | None = None,
+) -> ExperimentOutputs:
+    """Load CICIDS2017, run FW-LNSA experiments, and save all tables."""
+
+    paths = config["paths"]
+    preprocessing = config["preprocessing"]
+    sampling = preprocessing["sampling"]
+    split = preprocessing["split"]
+
+    dataset = prepare_cicids2017(
+        paths["raw_dir"],
+        archive_file=paths.get("archive_file"),
+        label_column=str(preprocessing.get("label_column", "Label")),
+        benign_label=str(preprocessing.get("benign_label", "BENIGN")),
+        chunk_size=int(preprocessing.get("chunk_size", 25_000)),
+        max_chunks_per_file=preprocessing.get("max_chunks_per_file"),
+        drop_duplicates=bool(preprocessing.get("drop_duplicates", True)),
+        sampling_strategy=str(sampling.get("strategy", "per_label_cap")),
+        max_benign_records=int(sampling.get("max_benign_records", 1)),
+        max_records_per_attack_label=int(sampling.get("max_records_per_attack_label", 1)),
+        max_total_records=sampling.get("max_total_records"),
+        sampling_seed=int(sampling.get("random_seed", 42)),
+        test_size=float(split.get("test_size", 0.30)),
+        split_seed=int(split.get("random_seed", 42)),
+        stratify_by=str(split.get("stratify_by", "original_label")),
+        scale=bool(preprocessing.get("scale", True)),
+    )
+    return run_prepared_fw_lnsa_experiments(
         dataset,
         config,
         max_runs=max_runs,
