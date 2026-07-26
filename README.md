@@ -250,9 +250,9 @@ Temporary citation placeholder:
 
 ## Authors
 
-- **Sarosh Jawed** — Researcher / first author; implementation, experiments, repository, and manuscript drafting.
-- **Tanazzah** — Second author; planned support for experiments, baseline comparisons, validation, or manuscript support.
-- **Dr. Suraiya Akter** — Advisor / third author; research supervision and methodological guidance.
+- **Sarosh Jawed** - Researcher / first author; implementation, experiments, repository, and manuscript drafting.
+- **Tanazzah** - Second author; planned support for experiments, baseline comparisons, validation, or manuscript support.
+- **Dr. Suraiya Akter** - Advisor / third author; research supervision and methodological guidance.
 
 Authorship and task ownership should be documented through commits, experiment logs, result files, and writing contributions.
 
