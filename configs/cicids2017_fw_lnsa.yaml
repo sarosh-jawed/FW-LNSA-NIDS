@@ -103,33 +103,33 @@ profiles:
     preprocessing:
       chunk_size: 50000
       max_chunks_per_file: null
-      max_self_samples: 10000
+      max_self_samples: 5000
       sampling:
         strategy: global_cap
         max_benign_records: 30000
         max_records_per_attack_label: 7500
-        max_total_records: 120000
+        max_total_records: 60000
     feature_selection:
       feature_sizes: [10, 20]
       main_feature_size: 20
-      max_samples: 60000
+      max_samples: 30000
     experiment:
       methods: [hamming, weighted_hamming, weighted_smc]
       detector_budgets: [500, 1000]
-      seeds: [42, 43]
+      seeds: [42, 43, 44, 45, 46]
     method_settings:
       hamming:
         threshold_scale: ratio
-        self_thresholds: [0.05, 0.10, 0.15]
-        detection_thresholds: [0.10, 0.15, 0.20, 0.25]
+        self_thresholds: [0.10, 0.15]
+        detection_thresholds: [0.15, 0.20]
       weighted_hamming:
         threshold_scale: direct
-        self_thresholds: [0.05, 0.10, 0.15]
-        detection_thresholds: [0.10, 0.15, 0.20, 0.25]
+        self_thresholds: [0.10, 0.15]
+        detection_thresholds: [0.15, 0.20]
       weighted_smc:
         threshold_scale: direct
-        self_thresholds: [0.85, 0.80, 0.75]
-        detection_thresholds: [0.85, 0.80, 0.75, 0.70]
+        self_thresholds: [0.80, 0.75]
+        detection_thresholds: [0.80, 0.75]
 
   full:
     preprocessing:

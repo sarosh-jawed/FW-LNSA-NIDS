@@ -100,7 +100,7 @@ profiles:
       main_feature_size: 20
       max_samples: 60000
     experiment:
-      seeds: [42, 43]
+      seeds: [42, 43, 44, 45, 46]
     models:
       random_forest:
         parameters:

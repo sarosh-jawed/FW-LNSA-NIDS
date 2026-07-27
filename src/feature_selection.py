@@ -31,11 +31,28 @@ def compute_mutual_information_scores(
     if X_train.empty:
         raise ValueError("X_train is empty. Feature selection cannot run.")
 
-    scores = mutual_info_classif(X_train, y_train, random_state=random_seed)
+    # One-hot encoded categorical indicators are discrete, while scaled flow
+    # measurements remain continuous. Supplying this mask is both statistically
+    # appropriate and considerably faster than treating every binary indicator
+    # as a continuous nearest-neighbor variable.
+    values = np.ascontiguousarray(X_train.to_numpy(dtype=np.float64, copy=True))
+    discrete_mask = np.all(
+        np.isclose(values, 0.0) | np.isclose(values, 1.0),
+        axis=0,
+    )
+    labels = np.asarray(y_train, dtype=np.int8)
+    scores = mutual_info_classif(
+        values,
+        labels,
+        discrete_features=discrete_mask,
+        random_state=random_seed,
+        n_jobs=1,
+    )
     result = pd.DataFrame(
         {
             "feature": X_train.columns,
             "mi_score": scores.astype(float),
+            "is_discrete": discrete_mask,
         }
     )
     return result.sort_values("mi_score", ascending=False).reset_index(drop=True)

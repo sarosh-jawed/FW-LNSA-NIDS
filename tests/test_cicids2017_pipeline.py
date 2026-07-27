@@ -15,6 +15,7 @@ import pandas as pd
 from src.config import ConfigurationError, load_yaml_config, resolve_profile
 from src.experiments import run_cicids2017_experiments
 from src.preprocessing import (
+    _safe_stratification_labels,
     clean_cicids2017_dataframe,
     discover_cicids2017_sources,
     map_cicids2017_attack_category,
@@ -188,6 +189,24 @@ class CICIDS2017PipelineTests(unittest.TestCase):
             )
             self.assertEqual(prepared.metadata["sampling_strategy"], "global_cap")
             self.assertEqual(len(prepared.X_train) + len(prepared.X_test), 30)
+
+    def test_rare_labels_are_pooled_without_losing_common_strata(self) -> None:
+        labels = pd.Series(
+            ["BENIGN"] * 6
+            + ["DDoS"] * 6
+            + ["Heartbleed", "Infiltration"]
+        )
+        y = np.array([0] * 6 + [1] * 8, dtype=np.int8)
+        strata, effective, rare_count = _safe_stratification_labels(
+            labels,
+            y,
+            strategy="original_label",
+        )
+        self.assertEqual(effective, "original_label_with_rare_pooling")
+        self.assertEqual(rare_count, 2)
+        self.assertEqual(int(np.sum(strata == "BENIGN")), 6)
+        self.assertEqual(int(np.sum(strata == "DDoS")), 6)
+        self.assertEqual(int(np.sum(strata == "__RARE_ATTACK__")), 2)
 
     def test_attack_category_mapping(self) -> None:
         self.assertEqual(map_cicids2017_attack_category("BENIGN"), "Normal")

@@ -3,15 +3,20 @@
 from __future__ import annotations
 
 import math
+import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 import numpy as np
 import pandas as pd
 
 from .evaluation import attack_category_analysis, evaluate_binary_classification
-from .feature_selection import FeatureSelectionResult, mutual_information_feature_selection
+from .feature_selection import (
+    FeatureSelectionResult,
+    compute_mutual_information_scores,
+    select_top_features,
+)
 from .fw_lnsa import FWLNSA
 from .preprocessing import PreparedDataset, prepare_cicids2017, prepare_nsl_kdd
 from .representation import BinaryRepresentationResult, binary_median_split
@@ -23,6 +28,17 @@ from .utils import (
 )
 
 ProgressCallback = Callable[[int, int, dict[str, Any]], None]
+ResultCallback = Callable[[dict[str, Any]], None]
+
+FW_RUN_KEY_COLUMNS = (
+    "profile",
+    "method",
+    "fs_size",
+    "seed",
+    "detector_budget",
+    "self_threshold_config",
+    "detection_threshold_config",
+)
 
 METHOD_ROLES = {
     "hamming": "classical_baseline",
@@ -114,14 +130,19 @@ def prepare_feature_sets(
         random_seed=random_seed,
     )
 
+    # Mutual-information scores are independent of the requested feature-set
+    # size. Compute them once, then derive nested FS-10 and FS-20 selections
+    # from the same ranked table. This removes duplicate fitting and guarantees
+    # that feature-set ablations differ only in representation size.
+    score_table = compute_mutual_information_scores(
+        selection_X,
+        selection_y,
+        random_seed=random_seed,
+    )
+
     prepared: dict[int, PreparedFeatureSet] = {}
     for fs_size in feature_sizes:
-        selection = mutual_information_feature_selection(
-            selection_X,
-            selection_y,
-            fs_size=fs_size,
-            random_seed=random_seed,
-        )
+        selection = select_top_features(score_table, fs_size=fs_size)
         representation = binary_median_split(
             dataset.X_train,
             dataset.X_test,
@@ -151,6 +172,49 @@ def _estimate_total_runs(config: Mapping[str, Any]) -> int:
                 * len(settings["detection_thresholds"])
             )
     return total
+
+
+def _normalize_key_value(value: Any) -> Any:
+    """Normalize values used in deterministic run identity keys."""
+
+    if isinstance(value, (np.integer, int)):
+        return int(value)
+    if isinstance(value, (np.floating, float)):
+        return round(float(value), 12)
+    return str(value)
+
+
+def fw_run_key(row: Mapping[str, Any]) -> tuple[Any, ...]:
+    """Return the stable identity of one FW-LNSA experiment row."""
+
+    return tuple(_normalize_key_value(row[column]) for column in FW_RUN_KEY_COLUMNS)
+
+
+def iter_fw_run_specs(config: Mapping[str, Any]) -> Iterable[dict[str, Any]]:
+    """Yield configured runs in the exact deterministic execution order."""
+
+    feature_config = config["feature_selection"]
+    experiment = config["experiment"]
+    method_settings = config["method_settings"]
+    profile_name = str(config.get("profile_name", "unknown"))
+
+    for fs_size in feature_config["feature_sizes"]:
+        for method in experiment["methods"]:
+            settings = method_settings[method]
+            for seed in experiment["seeds"]:
+                for detector_budget in experiment["detector_budgets"]:
+                    for self_value in settings["self_thresholds"]:
+                        for detection_value in settings["detection_thresholds"]:
+                            yield {
+                                "profile": profile_name,
+                                "method": str(method),
+                                "fs_size": int(fs_size),
+                                "seed": int(seed),
+                                "detector_budget": int(detector_budget),
+                                "self_threshold_config": float(self_value),
+                                "detection_threshold_config": float(detection_value),
+                                "threshold_scale": str(settings["threshold_scale"]),
+                            }
 
 
 def _run_one(
@@ -234,14 +298,127 @@ def _run_one(
     return row, model, predictions
 
 
+def _run_detection_threshold_group(
+    prepared: PreparedFeatureSet,
+    dataset: PreparedDataset,
+    *,
+    method: str,
+    seed: int,
+    detector_budget: int,
+    self_threshold_config: float,
+    detection_threshold_configs: list[float],
+    threshold_scale: str,
+    max_self_samples: int | None,
+    deduplicate_candidates: bool,
+    prediction_chunk_size: int,
+    profile_name: str,
+    train_partition_hash: str,
+    test_partition_hash: str,
+) -> list[dict[str, Any]]:
+    """Fit one detector pool and evaluate every detection threshold on its scores.
+
+    Detector generation and nearest-detector scoring do not depend on the final
+    detection threshold. Reusing them avoids repeating identical computation
+    while preserving one result row for every configured threshold.
+    """
+
+    fs_size = prepared.fs_size
+    self_threshold = _threshold_value(
+        method,
+        self_threshold_config,
+        fs_size,
+        threshold_scale,
+    )
+    configured_thresholds = [float(value) for value in detection_threshold_configs]
+    actual_thresholds = [
+        _threshold_value(method, value, fs_size, threshold_scale)
+        for value in configured_thresholds
+    ]
+
+    model = FWLNSA(
+        method=method,
+        n_detectors=detector_budget,
+        self_threshold=self_threshold,
+        detection_threshold=actual_thresholds[0],
+        random_seed=seed,
+        max_self_samples=max_self_samples,
+        deduplicate_candidates=deduplicate_candidates,
+        prediction_chunk_size=prediction_chunk_size,
+    )
+    model.fit(
+        prepared.representation.X_train_bin,
+        dataset.y_train,
+        feature_weights=prepared.selection.weights,
+    )
+
+    score_started = time.perf_counter()
+    scores = model.decision_scores(prepared.representation.X_test_bin)
+    detection_time = float(time.perf_counter() - score_started)
+    fit_summary = model.get_detector_summary()
+    generation_time = float(fit_summary["generation_time_sec"])
+
+    feature_selection_hash = stable_feature_selection_signature(
+        prepared.selection.selected_features,
+        prepared.selection.selected_scores["mi_score"].to_numpy(dtype=float),
+        prepared.selection.weights,
+    )
+    pool_key = (
+        f"{profile_name}|{method}|FS-{fs_size}|seed={seed}|budget={detector_budget}|"
+        f"self={float(self_threshold_config):.12g}"
+    )
+
+    rows: list[dict[str, Any]] = []
+    distance_method = method in {"hamming", "weighted_hamming"}
+    for configured, actual in zip(configured_thresholds, actual_thresholds):
+        if distance_method:
+            predictions = (scores <= actual).astype(np.int8)
+        else:
+            predictions = (scores >= actual).astype(np.int8)
+        metrics = evaluate_binary_classification(dataset.y_test, predictions)
+        detector_summary = dict(fit_summary)
+        detector_summary["detection_threshold"] = float(actual)
+        detector_summary["detection_time_sec"] = detection_time
+        detector_summary["total_time_sec"] = generation_time + detection_time
+
+        rows.append(
+            {
+                "profile": profile_name,
+                "dataset": str(dataset.metadata.get("dataset", "unknown")),
+                "method": method,
+                "method_name": _display_name(method),
+                "method_role": METHOD_ROLES[method],
+                "feature_set": f"FS-{fs_size}",
+                "fs_size": fs_size,
+                "selected_features": "|".join(prepared.selection.selected_features),
+                "feature_selection_hash": feature_selection_hash,
+                "seed": seed,
+                "detector_budget": detector_budget,
+                "self_threshold_config": float(self_threshold_config),
+                "detection_threshold_config": float(configured),
+                "threshold_scale": threshold_scale,
+                "detector_pool_key": pool_key,
+                "shared_score_evaluation": True,
+                "train_records": int(len(dataset.X_train)),
+                "test_records": int(len(dataset.X_test)),
+                "train_partition_hash": train_partition_hash,
+                "test_partition_hash": test_partition_hash,
+                **detector_summary,
+                **metrics.to_dict(),
+            }
+        )
+    return rows
+
+
 def run_experiment_grid(
     dataset: PreparedDataset,
     config: Mapping[str, Any],
     *,
     max_runs: int | None = None,
     progress_callback: ProgressCallback | None = None,
+    existing_results: pd.DataFrame | None = None,
+    result_callback: ResultCallback | None = None,
 ) -> tuple[pd.DataFrame, dict[int, PreparedFeatureSet]]:
-    """Run the configured method, threshold, budget, seed, and feature grid."""
+    """Run the configured grid with safe row-level resume support."""
 
     feature_config = config["feature_selection"]
     experiment = config["experiment"]
@@ -262,45 +439,77 @@ def run_experiment_grid(
         dataset.X_test, dataset.y_test, dataset.test_original_labels
     )
 
-    estimated_total = _estimate_total_runs(config)
-    run_limit = estimated_total if max_runs is None else min(max_runs, estimated_total)
+    all_specs = list(iter_fw_run_specs(config))
+    run_limit = len(all_specs) if max_runs is None else min(int(max_runs), len(all_specs))
+    selected_specs = all_specs[:run_limit]
+    allowed_keys = {fw_run_key(spec) for spec in selected_specs}
+
     rows: list[dict[str, Any]] = []
+    completed_keys: set[tuple[Any, ...]] = set()
+    if existing_results is not None and not existing_results.empty:
+        missing_columns = set(FW_RUN_KEY_COLUMNS) - set(existing_results.columns)
+        if missing_columns:
+            raise ValueError(
+                "Existing FW-LNSA results cannot be resumed because run identity "
+                f"columns are missing: {sorted(missing_columns)}"
+            )
+        for existing_row in existing_results.to_dict(orient="records"):
+            key = fw_run_key(existing_row)
+            if key in allowed_keys and key not in completed_keys:
+                rows.append(dict(existing_row))
+                completed_keys.add(key)
 
-    for fs_size in feature_config["feature_sizes"]:
-        prepared = prepared_sets[int(fs_size)]
-        for method in experiment["methods"]:
-            settings = method_settings[method]
-            for seed in experiment["seeds"]:
-                for detector_budget in experiment["detector_budgets"]:
-                    for self_value in settings["self_thresholds"]:
-                        for detection_value in settings["detection_thresholds"]:
-                            if len(rows) >= run_limit:
-                                return pd.DataFrame(rows), prepared_sets
+    if progress_callback is not None and rows:
+        progress_callback(len(rows), run_limit, rows[-1])
 
-                            row, _model, _predictions = _run_one(
-                                prepared,
-                                dataset,
-                                method=method,
-                                seed=int(seed),
-                                detector_budget=int(detector_budget),
-                                self_threshold_config=float(self_value),
-                                detection_threshold_config=float(detection_value),
-                                threshold_scale=str(settings["threshold_scale"]),
-                                max_self_samples=preprocessing.get("max_self_samples"),
-                                deduplicate_candidates=bool(
-                                    experiment.get("deduplicate_candidates", False)
-                                ),
-                                prediction_chunk_size=int(
-                                    experiment.get("prediction_chunk_size", 250)
-                                ),
-                                profile_name=str(config.get("profile_name", "unknown")),
-                                train_partition_hash=train_partition_hash,
-                                test_partition_hash=test_partition_hash,
-                            )
-                            rows.append(row)
-                            if progress_callback is not None:
-                                progress_callback(len(rows), run_limit, row)
+    grouped_specs: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+    for spec in selected_specs:
+        group_key = (
+            spec["profile"],
+            spec["method"],
+            spec["fs_size"],
+            spec["seed"],
+            spec["detector_budget"],
+            _normalize_key_value(spec["self_threshold_config"]),
+            spec["threshold_scale"],
+        )
+        grouped_specs.setdefault(group_key, []).append(spec)
 
+    for group in grouped_specs.values():
+        missing_specs = [spec for spec in group if fw_run_key(spec) not in completed_keys]
+        if not missing_specs:
+            continue
+
+        first = missing_specs[0]
+        generated_rows = _run_detection_threshold_group(
+            prepared_sets[int(first["fs_size"])],
+            dataset,
+            method=str(first["method"]),
+            seed=int(first["seed"]),
+            detector_budget=int(first["detector_budget"]),
+            self_threshold_config=float(first["self_threshold_config"]),
+            detection_threshold_configs=[
+                float(spec["detection_threshold_config"]) for spec in missing_specs
+            ],
+            threshold_scale=str(first["threshold_scale"]),
+            max_self_samples=preprocessing.get("max_self_samples"),
+            deduplicate_candidates=bool(experiment.get("deduplicate_candidates", False)),
+            prediction_chunk_size=int(experiment.get("prediction_chunk_size", 250)),
+            profile_name=str(config.get("profile_name", "unknown")),
+            train_partition_hash=train_partition_hash,
+            test_partition_hash=test_partition_hash,
+        )
+        for row in generated_rows:
+            key = fw_run_key(row)
+            rows.append(row)
+            completed_keys.add(key)
+            if result_callback is not None:
+                result_callback(row)
+            if progress_callback is not None:
+                progress_callback(len(rows), run_limit, row)
+
+    order = {fw_run_key(spec): index for index, spec in enumerate(selected_specs)}
+    rows.sort(key=lambda row: order[fw_run_key(row)])
     return pd.DataFrame(rows), prepared_sets
 
 
@@ -500,6 +709,8 @@ def run_prepared_fw_lnsa_experiments(
     max_runs: int | None = None,
     progress_callback: ProgressCallback | None = None,
     save_outputs: bool = True,
+    existing_results: pd.DataFrame | None = None,
+    result_callback: ResultCallback | None = None,
 ) -> ExperimentOutputs:
     """Run a complete FW-LNSA experiment package from a prepared dataset."""
 
@@ -508,6 +719,8 @@ def run_prepared_fw_lnsa_experiments(
         config,
         max_runs=max_runs,
         progress_callback=progress_callback,
+        existing_results=existing_results,
+        result_callback=result_callback,
     )
     method_summary = summarize_methods(results)
     balanced_configs = select_balanced_configs(
@@ -558,6 +771,8 @@ def run_prepared_nsl_kdd_experiments(
     max_runs: int | None = None,
     progress_callback: ProgressCallback | None = None,
     save_outputs: bool = True,
+    existing_results: pd.DataFrame | None = None,
+    result_callback: ResultCallback | None = None,
 ) -> ExperimentOutputs:
     """Backward-compatible NSL-KDD wrapper for the generic prepared runner."""
 
@@ -567,6 +782,8 @@ def run_prepared_nsl_kdd_experiments(
         max_runs=max_runs,
         progress_callback=progress_callback,
         save_outputs=save_outputs,
+        existing_results=existing_results,
+        result_callback=result_callback,
     )
 
 

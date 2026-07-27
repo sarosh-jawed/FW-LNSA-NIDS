@@ -1,0 +1,36 @@
+# Resumable Colab research execution for the final FW-LNSA evaluation.
+
+active_profile: research
+
+dataset_configs:
+  nsl_kdd: configs/nsl_kdd_fw_lnsa.yaml
+  cicids2017: configs/cicids2017_fw_lnsa.yaml
+
+baseline_config: configs/baseline_models.yaml
+
+execution:
+  stages:
+    - nsl_kdd_fw_lnsa
+    - cicids2017_fw_lnsa
+    - nsl_kdd_baselines
+    - cicids2017_baselines
+    - analysis
+  progress_dir: progress
+  manifest_dir: manifests
+  cache_dir: cache
+  resume: true
+
+analysis:
+  confidence: 0.95
+  fpr_limit: 0.10
+  expected:
+    datasets: [NSL-KDD, CICIDS2017]
+    methods: [hamming, weighted_hamming, weighted_smc]
+    feature_sizes: [10, 20]
+    detector_budgets: [500, 1000]
+    seeds: [42, 43, 44, 45, 46]
+    baseline_models:
+      - logistic_regression
+      - decision_tree
+      - random_forest
+      - isolation_forest
