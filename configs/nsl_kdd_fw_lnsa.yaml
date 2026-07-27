@@ -86,13 +86,13 @@ profiles:
 
   research:
     feature_selection:
-      feature_sizes: [20]
+      feature_sizes: [10, 20]
       main_feature_size: 20
       max_samples: 50000
     experiment:
-      methods: [hamming, weighted_hamming, weighted_smc, jaccard]
+      methods: [hamming, weighted_hamming, weighted_smc]
       detector_budgets: [500, 1000]
-      seeds: [42, 43]
+      seeds: [42, 43, 44, 45, 46]
     method_settings:
       hamming:
         threshold_scale: ratio
@@ -117,6 +117,6 @@ profiles:
       main_feature_size: 20
       max_samples: null
     experiment:
-      methods: [hamming, weighted_hamming, weighted_smc, jaccard]
+      methods: [hamming, weighted_hamming, weighted_smc]
       detector_budgets: [500, 1000, 2500, 5000]
       seeds: [42, 43, 44, 45, 46]

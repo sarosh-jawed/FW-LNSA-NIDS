@@ -14,7 +14,7 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
 
 import numpy as np
 import pandas as pd
@@ -25,7 +25,11 @@ from sklearn.tree import DecisionTreeClassifier
 
 from .evaluation import attack_category_analysis, evaluate_binary_classification
 from .experiments import _feature_selection_sample
-from .feature_selection import FeatureSelectionResult, mutual_information_feature_selection
+from .feature_selection import (
+    FeatureSelectionResult,
+    compute_mutual_information_scores,
+    select_top_features,
+)
 from .preprocessing import PreparedDataset
 from .utils import (
     ensure_dir,
@@ -49,6 +53,15 @@ BASELINE_MODEL_FAMILIES = {
 }
 
 ProgressCallback = Callable[[int, int, dict[str, Any]], None]
+ResultCallback = Callable[[dict[str, Any], pd.DataFrame], None]
+
+BASELINE_RUN_KEY_COLUMNS = (
+    "dataset_key",
+    "profile",
+    "model",
+    "fs_size",
+    "seed",
+)
 
 
 @dataclass(frozen=True)
@@ -180,14 +193,15 @@ def prepare_baseline_feature_sets(
         random_seed=random_seed,
     )
 
+    score_table = compute_mutual_information_scores(
+        selection_X,
+        selection_y,
+        random_seed=random_seed,
+    )
+
     prepared: dict[int, BaselineFeatureSet] = {}
     for fs_size in feature_sizes:
-        selection = mutual_information_feature_selection(
-            selection_X,
-            selection_y,
-            fs_size=int(fs_size),
-            random_seed=random_seed,
-        )
+        selection = select_top_features(score_table, fs_size=int(fs_size))
         columns = list(selection.selected_features)
         prepared[int(fs_size)] = BaselineFeatureSet(
             fs_size=int(fs_size),
@@ -271,6 +285,47 @@ def _selected_feature_table(
     return pd.DataFrame(rows)
 
 
+def _normalize_key_value(value: Any) -> Any:
+    if isinstance(value, (np.integer, int)):
+        return int(value)
+    if isinstance(value, (np.floating, float)):
+        return round(float(value), 12)
+    return str(value)
+
+
+def baseline_run_key(row: Mapping[str, Any]) -> tuple[Any, ...]:
+    """Return the stable identity of one baseline experiment row."""
+
+    return tuple(
+        _normalize_key_value(row[column]) for column in BASELINE_RUN_KEY_COLUMNS
+    )
+
+
+def iter_baseline_run_specs(
+    config: Mapping[str, Any],
+    *,
+    dataset_key: str,
+) -> Iterable[dict[str, Any]]:
+    """Yield baseline runs in deterministic execution order."""
+
+    enabled_models = [
+        name
+        for name, model_config in config["models"].items()
+        if bool(model_config.get("enabled", False))
+    ]
+    profile_name = str(config["profile_name"])
+    for fs_size in config["feature_selection"]["feature_sizes"]:
+        for model_name in enabled_models:
+            for seed in config["experiment"]["seeds"]:
+                yield {
+                    "dataset_key": dataset_key,
+                    "profile": profile_name,
+                    "model": str(model_name),
+                    "fs_size": int(fs_size),
+                    "seed": int(seed),
+                }
+
+
 def run_prepared_baseline_grid(
     dataset: PreparedDataset,
     config: Mapping[str, Any],
@@ -278,8 +333,11 @@ def run_prepared_baseline_grid(
     dataset_key: str,
     max_runs: int | None = None,
     progress_callback: ProgressCallback | None = None,
+    existing_results: pd.DataFrame | None = None,
+    existing_category_analysis: pd.DataFrame | None = None,
+    result_callback: ResultCallback | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Run all configured models, feature sets, and seeds on one dataset."""
+    """Run baseline models with row-level progress and resume support."""
 
     feature_config = config["feature_selection"]
     prepared_sets = prepare_baseline_feature_sets(
@@ -289,17 +347,10 @@ def run_prepared_baseline_grid(
         max_selection_samples=feature_config.get("max_samples"),
     )
 
-    enabled_models = [
-        name
-        for name, model_config in config["models"].items()
-        if bool(model_config.get("enabled", False))
-    ]
-    total_runs = (
-        len(enabled_models)
-        * len(feature_config["feature_sizes"])
-        * len(config["experiment"]["seeds"])
-    )
-    run_limit = total_runs if max_runs is None else min(total_runs, int(max_runs))
+    all_specs = list(iter_baseline_run_specs(config, dataset_key=dataset_key))
+    run_limit = len(all_specs) if max_runs is None else min(len(all_specs), int(max_runs))
+    selected_specs = all_specs[:run_limit]
+    allowed_keys = {baseline_run_key(spec) for spec in selected_specs}
 
     train_hash = stable_partition_signature(
         dataset.X_train,
@@ -314,104 +365,126 @@ def run_prepared_baseline_grid(
 
     rows: list[dict[str, Any]] = []
     category_tables: list[pd.DataFrame] = []
+    completed_keys: set[tuple[Any, ...]] = set()
     profile_name = str(config["profile_name"])
     dataset_name = str(dataset.metadata.get("dataset", dataset_key))
 
-    for fs_size in feature_config["feature_sizes"]:
-        prepared = prepared_sets[int(fs_size)]
-        for model_name in enabled_models:
-            model_config = config["models"][model_name]
-            for seed in config["experiment"]["seeds"]:
-                if len(rows) >= run_limit:
-                    selected = _selected_feature_table(
-                        prepared_sets,
-                        dataset_name=dataset_name,
-                        profile_name=profile_name,
-                    )
-                    return pd.DataFrame(rows), pd.concat(category_tables, ignore_index=True), selected
+    if existing_results is not None and not existing_results.empty:
+        missing_columns = set(BASELINE_RUN_KEY_COLUMNS) - set(existing_results.columns)
+        if missing_columns:
+            raise ValueError(
+                "Existing baseline results cannot be resumed because run identity "
+                f"columns are missing: {sorted(missing_columns)}"
+            )
+        for existing_row in existing_results.to_dict(orient="records"):
+            key = baseline_run_key(existing_row)
+            if key in allowed_keys and key not in completed_keys:
+                rows.append(dict(existing_row))
+                completed_keys.add(key)
 
-                model = build_baseline_model(
-                    model_name,
-                    model_config.get("parameters", {}),
-                    seed=int(seed),
-                )
-                predictions, resources = _fit_predict_one(
-                    model_name,
-                    model,
-                    prepared.X_train,
-                    dataset.y_train,
-                    prepared.X_test,
-                )
-                metrics = evaluate_binary_classification(dataset.y_test, predictions)
-                parameters = dict(model.get_params(deep=False))
-                parameters.pop("random_state", None)
+    if existing_category_analysis is not None and not existing_category_analysis.empty:
+        category_tables.append(existing_category_analysis.copy())
 
-                feature_selection_hash = stable_feature_selection_signature(
-                    prepared.selection.selected_features,
-                    prepared.selection.selected_scores["mi_score"].to_numpy(dtype=float),
-                    prepared.selection.weights,
-                )
+    if progress_callback is not None and rows:
+        progress_callback(len(rows), run_limit, rows[-1])
 
-                row: dict[str, Any] = {
+    for spec in selected_specs:
+        key = baseline_run_key(spec)
+        if key in completed_keys:
+            continue
+
+        fs_size = int(spec["fs_size"])
+        model_name = str(spec["model"])
+        seed = int(spec["seed"])
+        prepared = prepared_sets[fs_size]
+        model_config = config["models"][model_name]
+        model = build_baseline_model(
+            model_name,
+            model_config.get("parameters", {}),
+            seed=seed,
+        )
+        predictions, resources = _fit_predict_one(
+            model_name,
+            model,
+            prepared.X_train,
+            dataset.y_train,
+            prepared.X_test,
+        )
+        metrics = evaluate_binary_classification(dataset.y_test, predictions)
+        parameters = dict(model.get_params(deep=False))
+        parameters.pop("random_state", None)
+
+        feature_selection_hash = stable_feature_selection_signature(
+            prepared.selection.selected_features,
+            prepared.selection.selected_scores["mi_score"].to_numpy(dtype=float),
+            prepared.selection.weights,
+        )
+
+        row: dict[str, Any] = {
+            "dataset_key": dataset_key,
+            "dataset": dataset_name,
+            "profile": profile_name,
+            "approach": "Baseline",
+            "model": model_name,
+            "model_name": BASELINE_MODEL_NAMES[model_name],
+            "model_family": BASELINE_MODEL_FAMILIES[model_name],
+            "feature_set": f"FS-{fs_size}",
+            "fs_size": fs_size,
+            "seed": seed,
+            "feature_selection_method": "mutual_information",
+            "feature_selection_seed": int(feature_config["random_seed"]),
+            "selected_features": "|".join(prepared.selection.selected_features),
+            "feature_selection_hash": feature_selection_hash,
+            "model_parameters_json": json.dumps(parameters, sort_keys=True, default=str),
+            "train_records": int(len(dataset.X_train)),
+            "test_records": int(len(dataset.X_test)),
+            "train_normal_records": int(np.sum(dataset.y_train == 0)),
+            "train_attack_records": int(np.sum(dataset.y_train == 1)),
+            "test_normal_records": int(np.sum(dataset.y_test == 0)),
+            "test_attack_records": int(np.sum(dataset.y_test == 1)),
+            "train_partition_hash": train_hash,
+            "test_partition_hash": test_hash,
+            **resources,
+            **metrics.to_dict(),
+        }
+        rows.append(row)
+        completed_keys.add(key)
+
+        category_frame = pd.DataFrame()
+        categories = dataset.test_attack_categories
+        if categories is not None:
+            category_frame = attack_category_analysis(
+                dataset.y_test,
+                predictions,
+                categories,
+                run_metadata={
                     "dataset_key": dataset_key,
                     "dataset": dataset_name,
                     "profile": profile_name,
-                    "approach": "Baseline",
                     "model": model_name,
                     "model_name": BASELINE_MODEL_NAMES[model_name],
                     "model_family": BASELINE_MODEL_FAMILIES[model_name],
-                    "feature_set": f"FS-{int(fs_size)}",
-                    "fs_size": int(fs_size),
-                    "seed": int(seed),
-                    "feature_selection_method": "mutual_information",
-                    "feature_selection_seed": int(feature_config["random_seed"]),
-                    "selected_features": "|".join(prepared.selection.selected_features),
-                    "feature_selection_hash": feature_selection_hash,
-                    "model_parameters_json": json.dumps(parameters, sort_keys=True, default=str),
-                    "train_records": int(len(dataset.X_train)),
-                    "test_records": int(len(dataset.X_test)),
-                    "train_normal_records": int(np.sum(dataset.y_train == 0)),
-                    "train_attack_records": int(np.sum(dataset.y_train == 1)),
-                    "test_normal_records": int(np.sum(dataset.y_test == 0)),
-                    "test_attack_records": int(np.sum(dataset.y_test == 1)),
+                    "feature_set": f"FS-{fs_size}",
+                    "fs_size": fs_size,
+                    "seed": seed,
                     "train_partition_hash": train_hash,
                     "test_partition_hash": test_hash,
-                    **resources,
-                    **metrics.to_dict(),
-                }
-                rows.append(row)
+                },
+            )
+            category_tables.append(category_frame)
 
-                categories = dataset.test_attack_categories
-                if categories is not None:
-                    category_tables.append(
-                        attack_category_analysis(
-                            dataset.y_test,
-                            predictions,
-                            categories,
-                            run_metadata={
-                                "dataset_key": dataset_key,
-                                "dataset": dataset_name,
-                                "profile": profile_name,
-                                "model": model_name,
-                                "model_name": BASELINE_MODEL_NAMES[model_name],
-                                "model_family": BASELINE_MODEL_FAMILIES[model_name],
-                                "feature_set": f"FS-{int(fs_size)}",
-                                "fs_size": int(fs_size),
-                                "seed": int(seed),
-                                "train_partition_hash": train_hash,
-                                "test_partition_hash": test_hash,
-                            },
-                        )
-                    )
-
-                if progress_callback is not None:
-                    progress_callback(len(rows), run_limit, row)
+        if result_callback is not None:
+            result_callback(row, category_frame)
+        if progress_callback is not None:
+            progress_callback(len(rows), run_limit, row)
 
     selected = _selected_feature_table(
         prepared_sets,
         dataset_name=dataset_name,
         profile_name=profile_name,
     )
+    order = {baseline_run_key(spec): index for index, spec in enumerate(selected_specs)}
+    rows.sort(key=lambda row: order[baseline_run_key(row)])
     category_frame = (
         pd.concat(category_tables, ignore_index=True)
         if category_tables
@@ -716,6 +789,9 @@ def run_prepared_baseline_experiments(
     max_runs: int | None = None,
     progress_callback: ProgressCallback | None = None,
     save_outputs: bool = True,
+    existing_results: pd.DataFrame | None = None,
+    existing_category_analysis: pd.DataFrame | None = None,
+    result_callback: ResultCallback | None = None,
 ) -> BaselineOutputs:
     """Run and optionally save a complete baseline package for one dataset."""
 
@@ -725,6 +801,9 @@ def run_prepared_baseline_experiments(
         dataset_key=dataset_key,
         max_runs=max_runs,
         progress_callback=progress_callback,
+        existing_results=existing_results,
+        existing_category_analysis=existing_category_analysis,
+        result_callback=result_callback,
     )
     comparison = build_fw_lnsa_comparison(
         results,

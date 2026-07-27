@@ -49,11 +49,30 @@ Implemented processing controls:
 - remove exact duplicate feature-label rows before splitting
 - convert `BENIGN` to 0 and all attacks to 1
 - preserve original labels and map them to stable attack families
-- use deterministic per-label sampling to control memory and class imbalance
-- create a reproducible stratified train/test split
+- use deterministic per-label sampling for smoke validation
+- use deterministic bounded natural-distribution sampling for research runs
+- create a reproducible stratified train/test split, pooling only labels too rare to stratify safely
 - fit imputation medians and scaling only on training data
 - save a source-level and aggregate data-quality report
 
 ## Dataset rule
 
 Do not upload large raw datasets to GitHub unless the dataset license clearly allows redistribution. Prefer scripts/configuration plus clear download instructions.
+
+## Google Drive layout for Colab
+
+The research notebooks expect:
+
+```text
+MyDrive/FW-LNSA-NIDS/
+├── data/
+│   ├── nsl_kdd/
+│   │   ├── KDDTrain+.txt
+│   │   └── KDDTest+.txt
+│   └── cicids2017/
+│       └── MachineLearningCSV.zip
+└── results/
+```
+
+The `results` directory stores saved run rows, manifests, final tables, and
+figures so work survives Colab runtime resets.

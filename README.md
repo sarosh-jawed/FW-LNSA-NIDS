@@ -36,7 +36,10 @@ FW-LNSA-NIDS/
 ├── notebooks/
 │   ├── 01_nsl_kdd_exploration.ipynb
 │   ├── 02_fw_lnsa_nsl_kdd_reproducibility.ipynb
-│   └── 03_cicids2017_exploration.ipynb
+│   ├── 03_cicids2017_exploration.ipynb
+│   ├── 04_nsl_kdd_research_execution.ipynb
+│   ├── 05_cicids2017_research_execution.ipynb
+│   └── 06_baseline_and_ablation_research_execution.ipynb
 ├── src/
 │   ├── __init__.py
 │   ├── config.py
@@ -50,11 +53,14 @@ FW-LNSA-NIDS/
 │   ├── baselines.py
 │   ├── evaluation.py
 │   ├── experiments.py
+│   ├── research_execution.py
+│   ├── statistical_analysis.py
 │   └── utils.py
 ├── configs/
 │   ├── nsl_kdd_fw_lnsa.yaml
 │   ├── cicids2017_fw_lnsa.yaml
-│   └── baseline_models.yaml
+│   ├── baseline_models.yaml
+│   └── research_execution.yaml
 ├── scripts/
 │   ├── run_nsl_kdd_fw_lnsa.py
 │   ├── run_cicids2017_fw_lnsa.py
@@ -62,12 +68,17 @@ FW-LNSA-NIDS/
 │   ├── make_figures.py
 │   ├── validate_core_modules.py
 │   ├── validate_fw_lnsa_pipeline.py
-│   └── validate_cicids2017_pipeline.py
+│   ├── validate_cicids2017_pipeline.py
+│   ├── validate_research_execution.py
+│   ├── run_research_suite.py
+│   ├── summarize_research_results.py
+│   └── make_research_figures.py
 ├── tests/
 │   ├── test_core_modules.py
 │   ├── test_fw_lnsa_pipeline.py
 │   ├── test_cicids2017_pipeline.py
-│   └── test_baseline_pipeline.py
+│   ├── test_baseline_pipeline.py
+│   └── test_research_execution.py
 ├── results/
 │   ├── tables/
 │   └── figures/
@@ -152,6 +163,7 @@ python scripts/validate_core_modules.py
 python scripts/validate_fw_lnsa_pipeline.py
 python scripts/validate_cicids2017_pipeline.py
 python scripts/validate_baseline_pipeline.py
+python scripts/validate_research_execution.py
 ```
 
 The default NSL-KDD command uses the smoke profile so the complete pipeline can be checked safely before longer research runs:
@@ -217,6 +229,70 @@ Publication figures should be regenerated from saved CSV files with:
 python scripts/make_figures.py
 ```
 
+### Resumable Colab research execution
+
+The final research profiles should be run through the persistent execution
+layer. Each completed run is appended immediately to a durable JSONL progress
+journal, and the saved manifest records
+the configuration hash, dataset hash, Python environment, package versions, and
+Git commit. A resumed job is rejected when its data or configuration no longer
+matches the saved state.
+
+Review the exact configured workload before starting Colab:
+
+```bash
+python scripts/run_research_suite.py --profile research --plan-only
+```
+
+The current research profile contains 280 NSL-KDD FW-LNSA runs, 240
+CICIDS2017 FW-LNSA runs, and 40 baseline runs per dataset. The analysis stage
+then regenerates all repeated-run and ablation tables from the saved CSV files.
+Detection thresholds with the same detector-generation settings reuse one
+detector pool and one score pass, reducing the two FW-LNSA grids to 120 unique
+detector fits each. Prepared datasets are also cached for baseline reuse. When
+multiple stages are selected, the command-line runner starts each stage in a
+fresh Python process so dataset memory is released before the next stage begins.
+
+Run the final NSL-KDD research profile:
+
+```bash
+python scripts/run_research_suite.py \
+  --profile research \
+  --stages nsl_kdd_fw_lnsa \
+  --output-dir /path/to/persistent/results \
+  --nsl-train-file /path/to/KDDTrain+.txt \
+  --nsl-test-file /path/to/KDDTest+.txt
+```
+
+Run the final CICIDS2017 research profile:
+
+```bash
+python scripts/run_research_suite.py \
+  --profile research \
+  --stages cicids2017_fw_lnsa \
+  --output-dir /path/to/persistent/results \
+  --cic-archive-file /path/to/MachineLearningCSV.zip \
+  --cic-raw-dir /path/to/cicids2017
+```
+
+After both FW-LNSA runs finish, run all required baselines and the final
+ablation package:
+
+```bash
+python scripts/run_research_suite.py \
+  --profile research \
+  --stages nsl_kdd_baselines,cicids2017_baselines,analysis \
+  --output-dir /path/to/persistent/results \
+  --nsl-train-file /path/to/KDDTrain+.txt \
+  --nsl-test-file /path/to/KDDTest+.txt \
+  --cic-archive-file /path/to/MachineLearningCSV.zip \
+  --cic-raw-dir /path/to/cicids2017
+```
+
+The three Colab notebooks in `notebooks/04` through `notebooks/06` provide the
+same commands with Google Drive persistence and private GitHub access through
+Colab Secrets.
+
 ## Main Experiments
 
 ### NSL-KDD FW-LNSA
@@ -239,7 +315,7 @@ Primary settings:
 |---|---|
 | Feature sets | FS-10, FS-20; FS-All optional |
 | Main feature set | FS-20 |
-| Feature selection | Mutual information |
+| Feature selection | Mutual information with binary indicators treated as discrete |
 | Representation | Binary median split |
 | Detector budgets | 500, 1000, 2500, 5000 |
 | Seeds | 42, 43, 44, 45, 46 |
@@ -269,7 +345,7 @@ The data pipeline documents and validates:
 - `BENIGN` versus attack conversion
 - preserved original attack labels and stable attack families
 - deterministic class-aware sampling
-- stratified train/test splitting
+- stratified train/test splitting with rare labels pooled only for split safety
 - training-only median imputation and scaling
 - source-file and aggregate data-quality counts
 
@@ -321,6 +397,29 @@ framework with measurable tradeoffs in recall, FPR, runtime, and detector retent
 ## Results Summary
 
 This section should be updated only after final scripts regenerate the tables.
+
+The research analysis layer creates these publication-support tables:
+
+```text
+results/tables/research_fw_lnsa_summary.csv
+results/tables/research_baseline_summary.csv
+results/tables/research_best_fpr_controlled.csv
+results/tables/research_hamming_weight_ablation.csv
+results/tables/research_matching_formulation_ablation.csv
+results/tables/research_feature_set_ablation.csv
+results/tables/research_detector_budget_sensitivity.csv
+results/tables/research_self_threshold_sensitivity.csv
+results/tables/research_detection_threshold_sensitivity.csv
+results/tables/research_seed_stability.csv
+results/tables/research_cross_dataset_summary.csv
+results/tables/research_readiness_report.csv
+```
+
+Repeated-run summaries report mean, sample standard deviation, and 95 percent
+confidence intervals. Balanced configurations are selected from aggregated
+seed results, rather than from one favorable seed. Mutual-information scores
+are computed once per prepared partition and reused to create nested FS-10 and
+FS-20 selections.
 
 Planned summary table:
 

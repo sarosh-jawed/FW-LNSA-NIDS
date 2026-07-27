@@ -18,7 +18,10 @@ from src.detector_generation import (
     negative_selection,
     predict_with_detectors,
 )
-from src.feature_selection import mutual_information_feature_selection
+from src.feature_selection import (
+    compute_mutual_information_scores,
+    mutual_information_feature_selection,
+)
 from src.matching import (
     hamming_distance_matrix,
     jaccard_similarity_matrix,
@@ -69,6 +72,21 @@ class CoreModuleTests(unittest.TestCase):
         representation = binary_median_split(X_train, X_train, result.selected_features)
         validate_binary_matrix(representation.X_train_bin, name="X_train_bin")
         self.assertEqual(representation.X_train_bin.shape, (4, 2))
+
+    def test_mutual_information_marks_binary_indicators_as_discrete(self) -> None:
+        X_train = pd.DataFrame(
+            {
+                "binary_indicator": [0, 0, 1, 1, 0, 1],
+                "continuous_measure": [0.01, 0.12, 0.33, 0.61, 0.78, 0.95],
+            }
+        )
+        scores = compute_mutual_information_scores(
+            X_train,
+            np.array([0, 0, 0, 1, 1, 1], dtype=np.int8),
+            random_seed=42,
+        ).set_index("feature")
+        self.assertTrue(bool(scores.loc["binary_indicator", "is_discrete"]))
+        self.assertFalse(bool(scores.loc["continuous_measure", "is_discrete"]))
 
     def test_matching_scores_are_correct(self) -> None:
         records = np.array([[1, 0, 1], [0, 0, 1]], dtype=np.int8)

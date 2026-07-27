@@ -27,6 +27,9 @@ data/processed/
 # Large outputs / temporary experiment artifacts
 results/raw_results/
 results/tmp/
+results/progress/
+results/manifests/
+results/cache/
 *.npy
 *.npz
 *.pkl

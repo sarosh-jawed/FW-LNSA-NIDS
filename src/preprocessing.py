@@ -365,7 +365,11 @@ class _PrioritySampler:
             existing = self._frames.get(str(label))
             combined = group if existing is None else pd.concat([existing, group], ignore_index=True)
             if len(combined) > quota:
-                combined = combined.nsmallest(quota, "__priority__")
+                priorities = combined["__priority__"].to_numpy(dtype=np.uint64, copy=False)
+                # Sorting the narrow priority vector avoids pandas copying the
+                # full wide CICIDS2017 frame during every streamed chunk.
+                selected = np.argsort(priorities, kind="stable")[:quota]
+                combined = combined.iloc[selected]
             self._frames[str(label)] = combined.reset_index(drop=True)
 
     def build(self) -> pd.DataFrame:
@@ -637,13 +641,40 @@ def _safe_stratification_labels(
     y: np.ndarray,
     *,
     strategy: str,
-) -> np.ndarray:
+) -> tuple[np.ndarray, str, int]:
+    """Build stable split strata without discarding common attack labels.
+
+    CICIDS2017 contains extremely rare labels after exact-duplicate removal.
+    A single one-record label prevents direct multiclass stratification. Rather
+    than falling back to binary stratification for the entire dataset, rare
+    labels are pooled by binary class while common labels retain their original
+    strata. If even the pooled strata are too small, binary stratification is
+    used as the final safe fallback.
+    """
+
+    labels = original_labels.astype(str).reset_index(drop=True)
     if strategy == "binary":
-        return y
-    counts = original_labels.value_counts()
-    if len(counts) > 1 and int(counts.min()) >= 2:
-        return original_labels.to_numpy()
-    return y
+        return np.asarray(y, dtype=np.int8), "binary", 0
+
+    counts = labels.value_counts()
+    rare_labels = set(counts[counts < 2].index.astype(str))
+    if not rare_labels:
+        return labels.to_numpy(), "original_label", 0
+
+    pooled = labels.copy()
+    rare_mask = pooled.isin(rare_labels)
+    binary_labels = np.asarray(y, dtype=np.int8)
+    pooled.loc[rare_mask & (binary_labels == 0)] = "__RARE_NORMAL__"
+    pooled.loc[rare_mask & (binary_labels == 1)] = "__RARE_ATTACK__"
+    pooled_counts = pooled.value_counts()
+    if len(pooled_counts) > 1 and int(pooled_counts.min()) >= 2:
+        return (
+            pooled.to_numpy(),
+            "original_label_with_rare_pooling",
+            len(rare_labels),
+        )
+
+    return binary_labels, "binary_fallback", len(rare_labels)
 
 
 def prepare_cicids2017(
@@ -755,10 +786,12 @@ def prepare_cicids2017(
     categories_all = sampled["__attack_category__"].astype(str).reset_index(drop=True)
 
     indices = np.arange(len(sampled))
-    stratify_labels = _safe_stratification_labels(
-        original_all,
-        y_all,
-        strategy=stratify_by,
+    stratify_labels, effective_stratification, rare_labels_pooled = (
+        _safe_stratification_labels(
+            original_all,
+            y_all,
+            strategy=stratify_by,
+        )
     )
     train_idx, test_idx = train_test_split(
         indices,
@@ -823,6 +856,8 @@ def prepare_cicids2017(
         "train_missing_values_imputed": train_missing_before,
         "test_missing_values_imputed": test_missing_before,
         "all_missing_training_columns_removed": len(all_missing_columns),
+        "stratification_strategy_effective": effective_stratification,
+        "rare_labels_pooled": int(rare_labels_pooled),
     }
     label_rows: list[dict[str, object]] = []
     for label in sorted(original_all.unique()):
@@ -853,7 +888,8 @@ def prepare_cicids2017(
         "train_attack_records": int(np.sum(y_train == 1)),
         "test_normal_records": int(np.sum(y_test == 0)),
         "test_attack_records": int(np.sum(y_test == 1)),
-        "split_strategy": f"stratified_random:{stratify_by}",
+        "split_strategy": f"stratified_random:{effective_stratification}",
+        "rare_labels_pooled": int(rare_labels_pooled),
         "test_size": float(test_size),
         "sampling_strategy": sampling_strategy,
         "sampling_seed": int(sampling_seed),
