@@ -284,3 +284,121 @@ def validate_cicids2017_config(config: Mapping[str, Any]) -> None:
             "data_quality_report",
         },
     )
+
+SUPPORTED_BASELINE_MODELS = {
+    "logistic_regression",
+    "decision_tree",
+    "random_forest",
+    "isolation_forest",
+}
+
+
+def resolve_baseline_profile(
+    config: Mapping[str, Any],
+    profile_name: str | None = None,
+) -> dict[str, Any]:
+    """Apply one baseline execution profile and validate the result."""
+
+    base = {key: value for key, value in config.items() if key != "profiles"}
+    profiles = config.get("profiles", {})
+    selected_name = profile_name or str(base.get("active_profile", "smoke"))
+
+    if not isinstance(profiles, Mapping) or selected_name not in profiles:
+        available = ", ".join(sorted(str(name) for name in profiles)) or "none"
+        raise ConfigurationError(
+            f"Unknown baseline profile '{selected_name}'. Available profiles: {available}."
+        )
+    selected = profiles[selected_name]
+    if not isinstance(selected, Mapping):
+        raise ConfigurationError(f"Baseline profile '{selected_name}' must be a mapping.")
+
+    resolved = deep_merge(base, selected)
+    resolved["profile_name"] = selected_name
+    validate_baseline_config(resolved)
+    return resolved
+
+
+def validate_baseline_config(config: Mapping[str, Any]) -> None:
+    """Validate settings required by the baseline experiment runner."""
+
+    datasets = _require_nonempty_list(config, "datasets")
+    invalid_datasets = sorted(set(map(str, datasets)) - {"nsl_kdd", "cicids2017"})
+    if invalid_datasets:
+        raise ConfigurationError(
+            f"Unsupported baseline datasets: {', '.join(invalid_datasets)}."
+        )
+
+    dataset_configs = _require_mapping(config, "dataset_configs")
+    dataset_profiles = _require_mapping(config, "dataset_profiles")
+    for dataset_name in datasets:
+        if not dataset_configs.get(dataset_name):
+            raise ConfigurationError(
+                f"dataset_configs.{dataset_name} must reference a dataset YAML file."
+            )
+        if not dataset_profiles.get(dataset_name):
+            raise ConfigurationError(
+                f"dataset_profiles.{dataset_name} must name a dataset execution profile."
+            )
+
+    feature_selection = _require_mapping(config, "feature_selection")
+    feature_sizes = feature_selection.get("feature_sizes")
+    if not isinstance(feature_sizes, list) or not feature_sizes:
+        raise ConfigurationError("feature_selection.feature_sizes must be a non-empty list.")
+    if any(not isinstance(value, int) or value <= 0 for value in feature_sizes):
+        raise ConfigurationError("All baseline feature sizes must be positive integers.")
+    main_size = feature_selection.get("main_feature_size")
+    if main_size not in feature_sizes:
+        raise ConfigurationError(
+            "feature_selection.main_feature_size must appear in feature_sizes."
+        )
+    if not isinstance(feature_selection.get("random_seed"), int):
+        raise ConfigurationError("feature_selection.random_seed must be an integer.")
+    inherit_sampling = feature_selection.get("inherit_dataset_sampling", True)
+    if not isinstance(inherit_sampling, bool):
+        raise ConfigurationError(
+            "feature_selection.inherit_dataset_sampling must be true or false."
+        )
+    max_samples = feature_selection.get("max_samples")
+    if max_samples is not None and (not isinstance(max_samples, int) or max_samples <= 0):
+        raise ConfigurationError("feature_selection.max_samples must be positive or null.")
+
+    experiment = _require_mapping(config, "experiment")
+    seeds = experiment.get("seeds")
+    if not isinstance(seeds, list) or not seeds or any(not isinstance(seed, int) for seed in seeds):
+        raise ConfigurationError("experiment.seeds must be a non-empty list of integers.")
+
+    models = _require_mapping(config, "models")
+    enabled_models: list[str] = []
+    for model_name, model_config in models.items():
+        if model_name not in SUPPORTED_BASELINE_MODELS:
+            raise ConfigurationError(f"Unsupported baseline model '{model_name}'.")
+        if not isinstance(model_config, Mapping):
+            raise ConfigurationError(f"models.{model_name} must be a mapping.")
+        if bool(model_config.get("enabled", False)):
+            enabled_models.append(model_name)
+        parameters = model_config.get("parameters", {})
+        if not isinstance(parameters, Mapping):
+            raise ConfigurationError(f"models.{model_name}.parameters must be a mapping.")
+    if not enabled_models:
+        raise ConfigurationError("At least one baseline model must be enabled.")
+
+    selection = _require_mapping(config, "selection")
+    fpr_limit = selection.get("balanced_fpr_limit")
+    if not isinstance(fpr_limit, (int, float)) or not 0.0 <= float(fpr_limit) <= 1.0:
+        raise ConfigurationError("selection.balanced_fpr_limit must be between 0 and 1.")
+
+    outputs = _require_mapping(config, "outputs")
+    for dataset_name in datasets:
+        dataset_outputs = outputs.get(dataset_name)
+        if not isinstance(dataset_outputs, Mapping):
+            raise ConfigurationError(f"outputs.{dataset_name} must be a mapping.")
+        required = {
+            "baseline_results",
+            "comparison_table",
+            "attack_category_analysis",
+        }
+        missing = sorted(required - set(dataset_outputs))
+        if missing:
+            raise ConfigurationError(
+                f"outputs.{dataset_name} is missing: {', '.join(missing)}."
+            )

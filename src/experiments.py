@@ -15,7 +15,12 @@ from .feature_selection import FeatureSelectionResult, mutual_information_featur
 from .fw_lnsa import FWLNSA
 from .preprocessing import PreparedDataset, prepare_cicids2017, prepare_nsl_kdd
 from .representation import BinaryRepresentationResult, binary_median_split
-from .utils import ensure_dir, save_dataframe
+from .utils import (
+    ensure_dir,
+    save_dataframe,
+    stable_feature_selection_signature,
+    stable_partition_signature,
+)
 
 ProgressCallback = Callable[[int, int, dict[str, Any]], None]
 
@@ -162,6 +167,8 @@ def _run_one(
     deduplicate_candidates: bool,
     prediction_chunk_size: int,
     profile_name: str,
+    train_partition_hash: str,
+    test_partition_hash: str,
 ) -> tuple[dict[str, Any], FWLNSA, np.ndarray]:
     fs_size = prepared.fs_size
     self_threshold = _threshold_value(
@@ -196,6 +203,12 @@ def _run_one(
     metrics = evaluate_binary_classification(dataset.y_test, predictions)
     detector_summary = model.get_detector_summary()
 
+    feature_selection_hash = stable_feature_selection_signature(
+        prepared.selection.selected_features,
+        prepared.selection.selected_scores["mi_score"].to_numpy(dtype=float),
+        prepared.selection.weights,
+    )
+
     row = {
         "profile": profile_name,
         "dataset": str(dataset.metadata.get("dataset", "unknown")),
@@ -204,11 +217,17 @@ def _run_one(
         "method_role": METHOD_ROLES[method],
         "feature_set": f"FS-{fs_size}",
         "fs_size": fs_size,
+        "selected_features": "|".join(prepared.selection.selected_features),
+        "feature_selection_hash": feature_selection_hash,
         "seed": seed,
         "detector_budget": detector_budget,
         "self_threshold_config": float(self_threshold_config),
         "detection_threshold_config": float(detection_threshold_config),
         "threshold_scale": threshold_scale,
+        "train_records": int(len(dataset.X_train)),
+        "test_records": int(len(dataset.X_test)),
+        "train_partition_hash": train_partition_hash,
+        "test_partition_hash": test_partition_hash,
         **detector_summary,
         **metrics.to_dict(),
     }
@@ -234,6 +253,13 @@ def run_experiment_grid(
         list(feature_config["feature_sizes"]),
         random_seed=int(feature_config.get("random_seed", 42)),
         max_selection_samples=feature_config.get("max_samples"),
+    )
+
+    train_partition_hash = stable_partition_signature(
+        dataset.X_train, dataset.y_train, dataset.train_original_labels
+    )
+    test_partition_hash = stable_partition_signature(
+        dataset.X_test, dataset.y_test, dataset.test_original_labels
     )
 
     estimated_total = _estimate_total_runs(config)
@@ -268,6 +294,8 @@ def run_experiment_grid(
                                     experiment.get("prediction_chunk_size", 250)
                                 ),
                                 profile_name=str(config.get("profile_name", "unknown")),
+                                train_partition_hash=train_partition_hash,
+                                test_partition_hash=test_partition_hash,
                             )
                             rows.append(row)
                             if progress_callback is not None:

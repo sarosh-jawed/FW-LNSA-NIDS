@@ -1,21 +1,124 @@
+# Reproducible classical baselines for fair FW-LNSA comparison.
+# Dataset preparation is inherited from the matching FW-LNSA profile.
+
+active_profile: smoke
+
 datasets: [nsl_kdd, cicids2017]
-baselines:
+
+dataset_configs:
+  nsl_kdd: configs/nsl_kdd_fw_lnsa.yaml
+  cicids2017: configs/cicids2017_fw_lnsa.yaml
+
+dataset_profiles:
+  nsl_kdd: smoke
+  cicids2017: smoke
+
+feature_selection:
+  method: mutual_information
+  feature_sizes: [10, 20]
+  main_feature_size: 20
+  random_seed: 42
+  max_samples: null
+  inherit_dataset_sampling: true
+
+experiment:
+  seeds: [42, 43, 44, 45, 46]
+
+models:
   logistic_regression:
     enabled: true
-    max_iter: 1000
+    parameters:
+      solver: liblinear
+      max_iter: 1000
+      class_weight: balanced
   decision_tree:
     enabled: true
-    random_state: 42
+    parameters:
+      class_weight: balanced
+      max_depth: 20
+      min_samples_leaf: 2
   random_forest:
     enabled: true
-    n_estimators: 200
-    random_state: 42
+    parameters:
+      n_estimators: 200
+      class_weight: balanced_subsample
+      max_depth: 20
+      min_samples_leaf: 2
+      n_jobs: -1
   isolation_forest:
     enabled: true
-    n_estimators: 200
-    random_state: 42
-  xgboost:
-    enabled: false
-  lightgbm:
-    enabled: false
-metrics: [accuracy, precision, recall, f1, fpr, runtime]
+    parameters:
+      n_estimators: 200
+      contamination: auto
+      max_samples: auto
+      n_jobs: -1
+
+selection:
+  balanced_fpr_limit: 0.10
+
+outputs:
+  nsl_kdd:
+    baseline_results: nsl_kdd_baseline_results.csv
+    comparison_table: nsl_kdd_fw_lnsa_vs_baselines.csv
+    attack_category_analysis: nsl_kdd_baseline_attack_category_analysis.csv
+    selected_features: nsl_kdd_baseline_selected_features.csv
+  cicids2017:
+    baseline_results: cicids2017_baseline_results.csv
+    comparison_table: cicids2017_fw_lnsa_vs_baselines.csv
+    attack_category_analysis: cicids2017_baseline_attack_category_analysis.csv
+    selected_features: cicids2017_baseline_selected_features.csv
+
+profiles:
+  smoke:
+    datasets: [nsl_kdd, cicids2017]
+    dataset_profiles:
+      nsl_kdd: smoke
+      cicids2017: smoke
+    feature_selection:
+      feature_sizes: [20]
+      main_feature_size: 20
+      max_samples: 10000
+    experiment:
+      seeds: [42]
+    models:
+      random_forest:
+        parameters:
+          n_estimators: 50
+          n_jobs: 1
+      isolation_forest:
+        parameters:
+          n_estimators: 50
+          n_jobs: 1
+
+  research:
+    datasets: [nsl_kdd, cicids2017]
+    dataset_profiles:
+      nsl_kdd: research
+      cicids2017: research
+    feature_selection:
+      feature_sizes: [10, 20]
+      main_feature_size: 20
+      max_samples: 60000
+    experiment:
+      seeds: [42, 43]
+    models:
+      random_forest:
+        parameters:
+          n_estimators: 150
+          n_jobs: -1
+      isolation_forest:
+        parameters:
+          n_estimators: 150
+          n_jobs: -1
+
+  full:
+    datasets: [nsl_kdd, cicids2017]
+    dataset_profiles:
+      nsl_kdd: full
+      cicids2017: full
+    feature_selection:
+      feature_sizes: [10, 20]
+      main_feature_size: 20
+      max_samples: null
+    experiment:
+      seeds: [42, 43, 44, 45, 46]

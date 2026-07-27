@@ -66,7 +66,8 @@ FW-LNSA-NIDS/
 ├── tests/
 │   ├── test_core_modules.py
 │   ├── test_fw_lnsa_pipeline.py
-│   └── test_cicids2017_pipeline.py
+│   ├── test_cicids2017_pipeline.py
+│   └── test_baseline_pipeline.py
 ├── results/
 │   ├── tables/
 │   └── figures/
@@ -150,6 +151,7 @@ Validate the reusable modules and the integrated FW-LNSA pipeline first:
 python scripts/validate_core_modules.py
 python scripts/validate_fw_lnsa_pipeline.py
 python scripts/validate_cicids2017_pipeline.py
+python scripts/validate_baseline_pipeline.py
 ```
 
 The default NSL-KDD command uses the smoke profile so the complete pipeline can be checked safely before longer research runs:
@@ -188,10 +190,25 @@ Use the full profile only after reviewing the research profile outputs:
 python scripts/run_cicids2017_fw_lnsa.py --config configs/cicids2017_fw_lnsa.yaml --profile full
 ```
 
-Baseline models should run with:
+Baseline smoke tests for both datasets run with:
 
 ```bash
-python scripts/run_baselines.py --config configs/baseline_models.yaml
+python scripts/run_baselines.py --config configs/baseline_models.yaml --profile smoke --dataset all
+```
+
+Run one dataset when a shorter verification is useful:
+
+```bash
+python scripts/run_baselines.py --config configs/baseline_models.yaml --profile smoke --dataset nsl_kdd
+python scripts/run_baselines.py --config configs/baseline_models.yaml --profile smoke --dataset cicids2017
+```
+
+Use the research and full profiles only after the matching FW-LNSA profile has
+created compatible result tables:
+
+```bash
+python scripts/run_baselines.py --config configs/baseline_models.yaml --profile research --dataset all
+python scripts/run_baselines.py --config configs/baseline_models.yaml --profile full --dataset all
 ```
 
 Publication figures should be regenerated from saved CSV files with:
@@ -256,21 +273,50 @@ The data pipeline documents and validates:
 - training-only median imputation and scaling
 - source-file and aggregate data-quality counts
 
-Baseline and comparison tables are added in the next implementation package.
+Baseline runs reuse the same dataset profile, train/test partition, feature-selection
+seed, and feature-selection sample limit as the matching FW-LNSA run. Every result
+stores SHA-256 partition signatures so incompatible runs are not silently combined.
 
 ## Baseline Models
 
-Required baselines:
+Implemented baselines:
 
-| Baseline | Role |
-|---|---|
-| Logistic Regression | Simple interpretable supervised baseline |
-| Decision Tree | Fast interpretable supervised baseline |
-| Random Forest | Strong tabular supervised baseline |
-| Isolation Forest | Unsupervised anomaly-detection baseline |
-| XGBoost / LightGBM | Optional stronger supervised baseline |
+| Baseline | Training rule | Role |
+|---|---|---|
+| Logistic Regression | Full labeled training partition | Interpretable linear supervised baseline |
+| Decision Tree | Full labeled training partition | Interpretable nonlinear supervised baseline |
+| Random Forest | Full labeled training partition | Strong tabular supervised baseline |
+| Isolation Forest | Normal training traffic only | Unsupervised anomaly-detection baseline |
 
-The paper should not claim that FW-LNSA must outperform every supervised model. The expected claim is that FW-LNSA provides a lightweight, interpretable, detector-based AIS framework with measurable tradeoffs in recall, FPR, runtime, and detector retention.
+All baselines use continuous scaled FS-10 or FS-20 features selected by mutual
+information on training data only. The comparison protocol records accuracy,
+precision, recall, F1, FPR, FNR, fit time, prediction time, peak memory increase,
+process memory, serialized model size, model parameters, seeds, and partition
+signatures.
+
+Generated tables:
+
+```text
+results/tables/nsl_kdd_baseline_results.csv
+results/tables/nsl_kdd_fw_lnsa_vs_baselines.csv
+results/tables/nsl_kdd_baseline_attack_category_analysis.csv
+results/tables/nsl_kdd_baseline_selected_features.csv
+results/tables/cicids2017_baseline_results.csv
+results/tables/cicids2017_fw_lnsa_vs_baselines.csv
+results/tables/cicids2017_baseline_attack_category_analysis.csv
+results/tables/cicids2017_baseline_selected_features.csv
+```
+
+A comparison table includes FW-LNSA rows only when the profile, partition hashes,
+record counts, and feature setting are compatible. This prevents smoke, research,
+and full-profile results from being mixed accidentally.
+
+XGBoost and LightGBM remain optional future additions. They are not required for
+the core paper comparison and should not delay final experiments.
+
+The paper should not claim that FW-LNSA must outperform every supervised model.
+The expected contribution is a lightweight, interpretable, detector-based AIS
+framework with measurable tradeoffs in recall, FPR, runtime, and detector retention.
 
 ## Results Summary
 
