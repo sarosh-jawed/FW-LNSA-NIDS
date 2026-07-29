@@ -24,14 +24,17 @@ Expected files:
 - `KDDTrain+.txt`
 - `KDDTest+.txt`
 
-Processing notes to document later:
+Implemented processing controls:
 
 - assign 41 NSL-KDD feature names plus `label` and `difficulty`
 - convert `normal` to 0 and all attacks to 1
 - preserve original labels for attack-category analysis
-- map attacks into Normal, DoS, Probe, R2L, and U2R
-- one-hot encode `protocol_type`, `service`, and `flag`
-- fit scaling only on training data
+- map detailed labels into Normal, DoS, Probe, R2L, and U2R
+- report `Attack (Unspecified)` when a redistributed test file contains binary-only attack labels
+- split `KDDTrain+` into detector-training and validation partitions
+- keep `KDDTest+` untouched until the locked confirmatory evaluation
+- one-hot encode `protocol_type`, `service`, and `flag` using training vocabulary only
+- fit imputation and scaling only on detector-training data
 
 ## CICIDS2017
 
@@ -51,8 +54,10 @@ Implemented processing controls:
 - preserve original labels and map them to stable attack families
 - use deterministic per-label sampling for smoke validation
 - use deterministic bounded natural-distribution sampling for research runs
-- create a reproducible stratified train/test split, pooling only labels too rare to stratify safely
-- fit imputation medians and scaling only on training data
+- create a reproducible development/test split, pooling only labels too rare to stratify safely
+- split development data into detector-training and validation partitions
+- fit imputation medians and scaling only on detector-training data
+- reserve the untouched test partition for locked confirmatory evaluation
 - save a source-level and aggregate data-quality report
 
 ## Dataset rule
@@ -71,8 +76,11 @@ MyDrive/FW-LNSA-NIDS/
 │   │   └── KDDTest+.txt
 │   └── cicids2017/
 │       └── MachineLearningCSV.zip
-└── results/
+├── results_research/
+└── results_confirmatory/
 ```
 
-The `results` directory stores saved run rows, manifests, final tables, and
-figures so work survives Colab runtime resets.
+Keep exploratory and confirmatory outputs in separate directories. The
+confirmatory directory stores tuning journals, validation-selected locks, final
+seed results, manifests, tables, and packaged outputs so work survives Colab
+runtime resets.

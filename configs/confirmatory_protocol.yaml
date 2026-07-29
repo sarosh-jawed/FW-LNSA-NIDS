@@ -1,0 +1,128 @@
+# Validation-calibrated final protocol for FW-LNSA.
+# The test partition is never used for configuration or threshold selection.
+
+active_profile: smoke
+protocol_version: "1.0"
+
+paths:
+  output_dir: results_confirmatory
+
+protocol:
+  validation_size: 0.20
+  validation_seed: 2026
+  confidence: 0.95
+  max_self_samples: 10000
+  prediction_chunk_size: 250
+  deduplicate_candidates: false
+
+feature_selection:
+  method: mutual_information
+  random_seed: 42
+  max_samples: null
+
+experiment:
+  methods: [hamming, weighted_similarity]
+  feature_sizes: [10, 20]
+  detector_budgets: [500, 1000, 2500, 5000]
+  tuning_seeds: [42, 43, 44, 45, 46]
+  confirmatory_seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119]
+  target_fprs: [0.10, 0.05, 0.01]
+  self_thresholds:
+    hamming:
+      scale: ratio
+      values: [0.05, 0.10, 0.15]
+    weighted_similarity:
+      scale: direct
+      values: [0.85, 0.80, 0.75]
+
+datasets:
+  nsl_kdd:
+    train_file: data/raw/nsl_kdd/KDDTrain+.txt
+    test_file: data/raw/nsl_kdd/KDDTest+.txt
+    scale: true
+    stratify_by: original_label
+
+  cicids2017:
+    raw_dir: data/raw/cicids2017
+    archive_file: data/raw/cicids2017/MachineLearningCSV.zip
+    label_column: Label
+    benign_label: BENIGN
+    chunk_size: 50000
+    max_chunks_per_file: null
+    drop_duplicates: true
+    scale: true
+    test_size: 0.30
+    split_seed: 42
+    stratify_by: original_label
+    sampling:
+      strategy: global_cap
+      max_benign_records: 30000
+      max_records_per_attack_label: 7500
+      max_total_records: 60000
+      random_seed: 42
+
+profiles:
+  smoke:
+    protocol:
+      validation_size: 0.20
+      max_self_samples: 1000
+      prediction_chunk_size: 200
+    feature_selection:
+      max_samples: 5000
+    experiment:
+      methods: [hamming, weighted_similarity]
+      feature_sizes: [10]
+      detector_budgets: [50]
+      tuning_seeds: [42]
+      confirmatory_seeds: [100]
+      target_fprs: [0.10]
+      self_thresholds:
+        hamming:
+          scale: ratio
+          values: [0.10]
+        weighted_similarity:
+          scale: direct
+          values: [0.80]
+    datasets:
+      cicids2017:
+        chunk_size: 10000
+        max_chunks_per_file: 1
+        sampling:
+          strategy: per_label_cap
+          max_benign_records: 1500
+          max_records_per_attack_label: 250
+          max_total_records: null
+          random_seed: 42
+
+  confirmatory:
+    protocol:
+      validation_size: 0.20
+      validation_seed: 2026
+      max_self_samples: 10000
+      prediction_chunk_size: 250
+    feature_selection:
+      max_samples: 50000
+    experiment:
+      methods: [hamming, weighted_similarity]
+      feature_sizes: [10, 20]
+      detector_budgets: [500, 1000, 2500, 5000]
+      tuning_seeds: [42, 43, 44, 45, 46]
+      confirmatory_seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119]
+      target_fprs: [0.10, 0.05, 0.01]
+      self_thresholds:
+        hamming:
+          scale: ratio
+          values: [0.05, 0.10, 0.15]
+        weighted_similarity:
+          scale: direct
+          values: [0.85, 0.80, 0.75]
+    datasets:
+      cicids2017:
+        chunk_size: 50000
+        max_chunks_per_file: null
+        sampling:
+          strategy: global_cap
+          max_benign_records: 30000
+          max_records_per_attack_label: 7500
+          max_total_records: 60000
+          random_seed: 42

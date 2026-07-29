@@ -121,7 +121,7 @@ NSL_KDD_U2R_ATTACKS = {
 
 @dataclass(frozen=True)
 class PreparedDataset:
-    """Leakage-safe train/test representation used by experiments."""
+    """Leakage-safe train, validation, and test representation."""
 
     X_train: pd.DataFrame
     X_test: pd.DataFrame
@@ -134,12 +134,24 @@ class PreparedDataset:
     scaler: MinMaxScaler
     metadata: dict[str, object]
     data_quality_report: pd.DataFrame | None = None
+    X_validation: pd.DataFrame | None = None
+    y_validation: np.ndarray | None = None
+    validation_original_labels: pd.Series | None = None
+    validation_attack_categories: pd.Series | None = None
+
+    @property
+    def has_validation(self) -> bool:
+        return (
+            self.X_validation is not None
+            and self.y_validation is not None
+            and self.validation_original_labels is not None
+        )
 
 
 def normalize_label(label: object) -> str:
     """Normalize a dataset label for stable comparisons."""
 
-    return str(label).strip().lower()
+    return str(label).strip().lower().rstrip(".")
 
 
 def to_binary_label(label: object, normal_label: str = "normal") -> int:
@@ -149,11 +161,19 @@ def to_binary_label(label: object, normal_label: str = "normal") -> int:
 
 
 def map_nsl_kdd_attack_category(label: object) -> str:
-    """Map an NSL-KDD label to Normal, DoS, Probe, R2L, U2R, or Unknown."""
+    """Map an NSL-KDD label to a standard attack family.
+
+    Some redistributed NSL-KDD test files contain only ``Normal`` and
+    ``Attack`` labels. The latter is kept as ``Attack (Unspecified)`` so the
+    analysis does not invent a DoS, Probe, R2L, or U2R family that is absent
+    from the supplied data.
+    """
 
     cleaned = normalize_label(label)
     if cleaned == "normal":
         return "Normal"
+    if cleaned == "attack":
+        return "Attack (Unspecified)"
     if cleaned in NSL_KDD_DOS_ATTACKS:
         return "DoS"
     if cleaned in NSL_KDD_PROBE_ATTACKS:
@@ -176,10 +196,10 @@ def _detect_separator(path: str | Path) -> str:
 
 
 def read_nsl_kdd_file(path: str | Path) -> pd.DataFrame:
-    """Read one NSL-KDD train or test file.
+    """Read an NSL-KDD file with either 42 or 43 columns.
 
-    The function supports the common comma-separated files and tab-separated
-    mirrors. It raises a clear error if the file does not resolve to 43 columns.
+    Official files contain a difficulty column. Some binary-labelled mirrors
+    omit it. Both schemas are accepted and normalized to the same 43 columns.
     """
 
     file_path = Path(path)
@@ -187,18 +207,100 @@ def read_nsl_kdd_file(path: str | Path) -> pd.DataFrame:
         raise FileNotFoundError(f"NSL-KDD file not found: {file_path}")
 
     separator = _detect_separator(file_path)
-    df = pd.read_csv(file_path, names=NSL_KDD_COLUMNS, sep=separator, engine="c")
-
-    if df.shape[1] != len(NSL_KDD_COLUMNS):
+    frame = pd.read_csv(file_path, header=None, sep=separator, engine="c")
+    if frame.shape[1] not in {42, 43}:
         fallback = "\t" if separator == "," else ","
-        df = pd.read_csv(file_path, names=NSL_KDD_COLUMNS, sep=fallback, engine="c")
+        frame = pd.read_csv(file_path, header=None, sep=fallback, engine="c")
 
-    if df.shape[1] != len(NSL_KDD_COLUMNS):
+    if frame.shape[1] == 43:
+        frame.columns = NSL_KDD_COLUMNS
+    elif frame.shape[1] == 42:
+        frame.columns = NSL_KDD_FEATURE_COLUMNS + ["label"]
+        frame["difficulty"] = np.nan
+        frame = frame.loc[:, NSL_KDD_COLUMNS]
+    else:
         raise ValueError(
-            f"Expected {len(NSL_KDD_COLUMNS)} NSL-KDD columns, got {df.shape[1]} from {file_path}."
+            f"Expected 42 or 43 NSL-KDD columns, got {frame.shape[1]} from {file_path}."
         )
+    return frame
 
-    return df
+
+def _split_development_indices(
+    original_labels: pd.Series,
+    y: np.ndarray,
+    *,
+    validation_size: float,
+    random_seed: int,
+    stratify_by: str,
+) -> tuple[np.ndarray, np.ndarray, str, int]:
+    if not 0.0 < validation_size < 1.0:
+        raise ValueError("validation_size must be between 0 and 1.")
+    indices = np.arange(len(y))
+    stratify_labels, effective, pooled = _safe_stratification_labels(
+        original_labels,
+        y,
+        strategy=stratify_by,
+    )
+    train_idx, validation_idx = train_test_split(
+        indices,
+        test_size=validation_size,
+        random_state=random_seed,
+        shuffle=True,
+        stratify=stratify_labels,
+    )
+    return train_idx, validation_idx, effective, pooled
+
+
+def _encode_and_align_partitions(
+    train_features: pd.DataFrame,
+    other_partitions: Sequence[pd.DataFrame],
+    *,
+    categorical_columns: Sequence[str] | None = None,
+) -> tuple[pd.DataFrame, list[pd.DataFrame]]:
+    """Fit categorical vocabulary on training data and align other partitions."""
+
+    categorical_columns = list(categorical_columns or [])
+    present = [column for column in categorical_columns if column in train_features.columns]
+    train_encoded = pd.get_dummies(train_features, columns=present, dtype=float)
+    train_encoded = train_encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
+
+    aligned: list[pd.DataFrame] = []
+    for partition in other_partitions:
+        encoded = pd.get_dummies(
+            partition,
+            columns=[column for column in present if column in partition.columns],
+            dtype=float,
+        )
+        encoded = encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
+        aligned.append(
+            encoded.reindex(columns=train_encoded.columns, fill_value=0.0)
+            .reset_index(drop=True)
+            .astype(float)
+        )
+    return train_encoded.reset_index(drop=True).astype(float), aligned
+
+
+def _scale_partitions(
+    X_train: pd.DataFrame,
+    other_partitions: Sequence[pd.DataFrame],
+    *,
+    scale: bool,
+) -> tuple[pd.DataFrame, list[pd.DataFrame], MinMaxScaler]:
+    scaler = MinMaxScaler()
+    if scale:
+        train_scaled = pd.DataFrame(
+            scaler.fit_transform(X_train),
+            columns=X_train.columns,
+        )
+        others = [
+            pd.DataFrame(scaler.transform(partition), columns=X_train.columns)
+            for partition in other_partitions
+        ]
+    else:
+        scaler.fit(X_train)
+        train_scaled = X_train.reset_index(drop=True).astype(float)
+        others = [partition.reset_index(drop=True).astype(float) for partition in other_partitions]
+    return train_scaled, others, scaler
 
 
 def prepare_nsl_kdd(
@@ -206,73 +308,124 @@ def prepare_nsl_kdd(
     test_file: str | Path,
     *,
     scale: bool = True,
+    validation_size: float | None = None,
+    validation_seed: int = 42,
+    validation_stratify_by: str = "original_label",
 ) -> PreparedDataset:
-    """Load and preprocess NSL-KDD using train-only scaling.
-
-    Output features are numeric and aligned across train and test. Original
-    labels and attack categories are preserved outside the feature matrix.
-    """
+    """Load NSL-KDD with an optional train-only validation partition."""
 
     train_df = read_nsl_kdd_file(train_file).copy()
     test_df = read_nsl_kdd_file(test_file).copy()
 
-    train_original_labels = train_df["label"].astype(str).copy()
-    test_original_labels = test_df["label"].astype(str).copy()
+    development_labels = train_df["label"].astype(str).reset_index(drop=True)
+    test_original = test_df["label"].astype(str).reset_index(drop=True)
+    development_y = development_labels.map(to_binary_label).to_numpy(dtype=np.int8)
+    y_test = test_original.map(to_binary_label).to_numpy(dtype=np.int8)
 
-    y_train = train_original_labels.apply(to_binary_label).to_numpy(dtype=np.int8)
-    y_test = test_original_labels.apply(to_binary_label).to_numpy(dtype=np.int8)
-
-    train_attack_categories = train_original_labels.apply(map_nsl_kdd_attack_category)
-    test_attack_categories = test_original_labels.apply(map_nsl_kdd_attack_category)
-
-    train_features = train_df.drop(columns=["label", "difficulty"], errors="ignore")
+    development_features = train_df.drop(columns=["label", "difficulty"], errors="ignore")
     test_features = test_df.drop(columns=["label", "difficulty"], errors="ignore")
 
-    X_train, X_test = encode_and_align_train_test(
+    validation_effective = "disabled"
+    validation_rare_pooled = 0
+    if validation_size is None:
+        train_idx = np.arange(len(train_df))
+        validation_idx = np.array([], dtype=int)
+    else:
+        train_idx, validation_idx, validation_effective, validation_rare_pooled = (
+            _split_development_indices(
+                development_labels,
+                development_y,
+                validation_size=float(validation_size),
+                random_seed=int(validation_seed),
+                stratify_by=validation_stratify_by,
+            )
+        )
+
+    train_features = development_features.iloc[train_idx].reset_index(drop=True)
+    validation_features = (
+        development_features.iloc[validation_idx].reset_index(drop=True)
+        if len(validation_idx)
+        else None
+    )
+    other_raw = [partition for partition in [validation_features, test_features] if partition is not None]
+    X_train_encoded, aligned = _encode_and_align_partitions(
         train_features,
-        test_features,
+        other_raw,
         categorical_columns=NSL_KDD_CATEGORICAL_COLUMNS,
     )
-
-    scaler = MinMaxScaler()
-    if scale:
-        X_train_scaled = pd.DataFrame(
-            scaler.fit_transform(X_train),
-            columns=X_train.columns,
-            index=X_train.index,
-        )
-        X_test_scaled = pd.DataFrame(
-            scaler.transform(X_test),
-            columns=X_test.columns,
-            index=X_test.index,
-        )
+    if validation_features is None:
+        X_validation_encoded = None
+        X_test_encoded = aligned[0]
     else:
-        scaler.fit(X_train)
-        X_train_scaled = X_train.astype(float)
-        X_test_scaled = X_test.astype(float)
+        X_validation_encoded, X_test_encoded = aligned
+
+    scale_inputs = [partition for partition in [X_validation_encoded, X_test_encoded] if partition is not None]
+    X_train, scaled, scaler = _scale_partitions(
+        X_train_encoded, scale_inputs, scale=scale
+    )
+    if X_validation_encoded is None:
+        X_validation = None
+        X_test = scaled[0]
+    else:
+        X_validation, X_test = scaled
+
+    y_train = development_y[train_idx]
+    train_original = development_labels.iloc[train_idx].reset_index(drop=True)
+    train_categories = train_original.map(map_nsl_kdd_attack_category)
+    test_categories = test_original.map(map_nsl_kdd_attack_category)
+
+    y_validation = development_y[validation_idx] if len(validation_idx) else None
+    validation_original = (
+        development_labels.iloc[validation_idx].reset_index(drop=True)
+        if len(validation_idx)
+        else None
+    )
+    validation_categories = (
+        validation_original.map(map_nsl_kdd_attack_category)
+        if validation_original is not None
+        else None
+    )
+
+    detailed_test_categories = sorted(
+        set(test_categories) - {"Normal", "Attack (Unspecified)", "Unknown"}
+    )
+    category_resolution = "detailed" if detailed_test_categories else "binary_only"
 
     metadata = {
         "dataset": "NSL-KDD",
-        "train_records": int(len(train_df)),
-        "test_records": int(len(test_df)),
-        "encoded_features": int(X_train_scaled.shape[1]),
+        "development_records": int(len(train_df)),
+        "train_records": int(len(X_train)),
+        "validation_records": int(len(X_validation)) if X_validation is not None else 0,
+        "test_records": int(len(X_test)),
+        "encoded_features": int(X_train.shape[1]),
         "train_normal_records": int(np.sum(y_train == 0)),
         "train_attack_records": int(np.sum(y_train == 1)),
+        "validation_normal_records": int(np.sum(y_validation == 0)) if y_validation is not None else 0,
+        "validation_attack_records": int(np.sum(y_validation == 1)) if y_validation is not None else 0,
         "test_normal_records": int(np.sum(y_test == 0)),
         "test_attack_records": int(np.sum(y_test == 1)),
+        "validation_size": validation_size,
+        "validation_seed": int(validation_seed),
+        "validation_stratification_effective": validation_effective,
+        "validation_rare_labels_pooled": int(validation_rare_pooled),
+        "test_attack_category_resolution": category_resolution,
     }
 
     return PreparedDataset(
-        X_train=X_train_scaled,
-        X_test=X_test_scaled,
+        X_train=X_train,
+        X_test=X_test,
         y_train=y_train,
         y_test=y_test,
-        train_original_labels=train_original_labels,
-        test_original_labels=test_original_labels,
-        train_attack_categories=train_attack_categories,
-        test_attack_categories=test_attack_categories,
+        train_original_labels=train_original,
+        test_original_labels=test_original,
+        train_attack_categories=train_categories,
+        test_attack_categories=test_categories,
         scaler=scaler,
         metadata=metadata,
+        X_validation=X_validation,
+        y_validation=y_validation,
+        validation_original_labels=validation_original,
+        validation_attack_categories=validation_categories,
     )
 
 
@@ -282,35 +435,14 @@ def encode_and_align_train_test(
     *,
     categorical_columns: Sequence[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Fit categorical columns on training data and align test features safely.
+    """Fit categorical columns on training data and align test features safely."""
 
-    Test-only categories are not added to the learned feature space. Their
-    categorical indicators remain zero, which avoids transductive test-set
-    information entering the training representation.
-    """
-
-    categorical_columns = list(categorical_columns or [])
-    present_categoricals = [col for col in categorical_columns if col in train_features.columns]
-
-    train_encoded = pd.get_dummies(
+    train_encoded, aligned = _encode_and_align_partitions(
         train_features,
-        columns=present_categoricals,
-        dtype=float,
+        [test_features],
+        categorical_columns=categorical_columns,
     )
-    test_encoded = pd.get_dummies(
-        test_features,
-        columns=[col for col in present_categoricals if col in test_features.columns],
-        dtype=float,
-    )
-
-    train_encoded = train_encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
-    test_encoded = test_encoded.apply(pd.to_numeric, errors="coerce").fillna(0.0)
-    test_aligned = test_encoded.reindex(columns=train_encoded.columns, fill_value=0.0)
-
-    return (
-        train_encoded.reset_index(drop=True).astype(float),
-        test_aligned.reset_index(drop=True).astype(float),
-    )
+    return train_encoded, aligned[0]
 
 
 CICIDS2017_CATEGORY_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
@@ -695,13 +827,16 @@ def prepare_cicids2017(
     split_seed: int = 42,
     stratify_by: str = "original_label",
     scale: bool = True,
+    validation_size: float | None = None,
+    validation_seed: int = 42,
 ) -> PreparedDataset:
-    """Prepare CICIDS2017 using streaming, bounded sampling, and train-only fitting.
+    """Prepare CICIDS2017 with train-only fitting and optional validation.
 
-    Exact duplicates are removed before splitting. Numeric imputation medians and
-    scaling parameters are fitted on the training partition only. The resulting
-    data-quality report records every cleaning and sampling decision used by the
-    experiment runner.
+    Exact duplicates are removed before splitting. The final test partition is
+    created first and remains untouched. When validation is enabled, only the
+    development partition is split again. Imputation and scaling are fitted on
+    the detector-training partition and applied unchanged to validation and
+    test data.
     """
 
     if chunk_size <= 0:
@@ -712,10 +847,14 @@ def prepare_cicids2017(
         raise ValueError("sampling_strategy must be 'per_label_cap' or 'global_cap'.")
     if max_benign_records <= 0 or max_records_per_attack_label <= 0:
         raise ValueError("Per-label sampling quotas must be positive.")
-    if sampling_strategy == "global_cap" and (max_total_records is None or max_total_records <= 0):
+    if sampling_strategy == "global_cap" and (
+        max_total_records is None or max_total_records <= 0
+    ):
         raise ValueError("max_total_records must be positive for global_cap sampling.")
     if not 0.0 < test_size < 1.0:
         raise ValueError("test_size must be between 0 and 1.")
+    if validation_size is not None and not 0.0 < validation_size < 1.0:
+        raise ValueError("validation_size must be between 0 and 1.")
     if stratify_by not in {"original_label", "binary"}:
         raise ValueError("stratify_by must be 'original_label' or 'binary'.")
 
@@ -785,29 +924,62 @@ def prepare_cicids2017(
     original_all = sampled["__original_label__"].astype(str).reset_index(drop=True)
     categories_all = sampled["__attack_category__"].astype(str).reset_index(drop=True)
 
-    indices = np.arange(len(sampled))
-    stratify_labels, effective_stratification, rare_labels_pooled = (
-        _safe_stratification_labels(
-            original_all,
-            y_all,
-            strategy=stratify_by,
-        )
+    all_indices = np.arange(len(sampled))
+    test_stratify, test_stratification, test_rare_pooled = _safe_stratification_labels(
+        original_all,
+        y_all,
+        strategy=stratify_by,
     )
-    train_idx, test_idx = train_test_split(
-        indices,
+    development_idx, test_idx = train_test_split(
+        all_indices,
         test_size=test_size,
         random_state=split_seed,
         shuffle=True,
-        stratify=stratify_labels,
+        stratify=test_stratify,
     )
 
+    validation_stratification = "disabled"
+    validation_rare_pooled = 0
+    if validation_size is None:
+        train_idx = np.asarray(development_idx, dtype=int)
+        validation_idx = np.array([], dtype=int)
+    else:
+        development_original = original_all.iloc[development_idx].reset_index(drop=True)
+        development_y = y_all[development_idx]
+        local_train, local_validation, validation_stratification, validation_rare_pooled = (
+            _split_development_indices(
+                development_original,
+                development_y,
+                validation_size=float(validation_size),
+                random_seed=int(validation_seed),
+                stratify_by=stratify_by,
+            )
+        )
+        train_idx = np.asarray(development_idx, dtype=int)[local_train]
+        validation_idx = np.asarray(development_idx, dtype=int)[local_validation]
+
     X_train_raw = X_all.iloc[train_idx].reset_index(drop=True)
+    X_validation_raw = (
+        X_all.iloc[validation_idx].reset_index(drop=True) if len(validation_idx) else None
+    )
     X_test_raw = X_all.iloc[test_idx].reset_index(drop=True)
+
     y_train = y_all[train_idx]
+    y_validation = y_all[validation_idx] if len(validation_idx) else None
     y_test = y_all[test_idx]
     train_original = original_all.iloc[train_idx].reset_index(drop=True)
+    validation_original = (
+        original_all.iloc[validation_idx].reset_index(drop=True)
+        if len(validation_idx)
+        else None
+    )
     test_original = original_all.iloc[test_idx].reset_index(drop=True)
     train_categories = categories_all.iloc[train_idx].reset_index(drop=True)
+    validation_categories = (
+        categories_all.iloc[validation_idx].reset_index(drop=True)
+        if len(validation_idx)
+        else None
+    )
     test_categories = categories_all.iloc[test_idx].reset_index(drop=True)
 
     train_medians = X_train_raw.median(numeric_only=True)
@@ -815,27 +987,40 @@ def prepare_cicids2017(
     if all_missing_columns:
         X_train_raw = X_train_raw.drop(columns=all_missing_columns)
         X_test_raw = X_test_raw.drop(columns=all_missing_columns)
+        if X_validation_raw is not None:
+            X_validation_raw = X_validation_raw.drop(columns=all_missing_columns)
         train_medians = X_train_raw.median(numeric_only=True)
 
     train_missing_before = int(X_train_raw.isna().to_numpy().sum())
+    validation_missing_before = (
+        int(X_validation_raw.isna().to_numpy().sum())
+        if X_validation_raw is not None
+        else 0
+    )
     test_missing_before = int(X_test_raw.isna().to_numpy().sum())
     X_train_imputed = X_train_raw.fillna(train_medians).fillna(0.0).astype(float)
+    X_validation_imputed = (
+        X_validation_raw.fillna(train_medians).fillna(0.0).astype(float)
+        if X_validation_raw is not None
+        else None
+    )
     X_test_imputed = X_test_raw.fillna(train_medians).fillna(0.0).astype(float)
 
-    scaler = MinMaxScaler()
-    if scale:
-        X_train = pd.DataFrame(
-            scaler.fit_transform(X_train_imputed),
-            columns=X_train_imputed.columns,
-        )
-        X_test = pd.DataFrame(
-            scaler.transform(X_test_imputed),
-            columns=X_test_imputed.columns,
-        )
+    other_imputed = [
+        partition
+        for partition in [X_validation_imputed, X_test_imputed]
+        if partition is not None
+    ]
+    X_train, scaled, scaler = _scale_partitions(
+        X_train_imputed,
+        other_imputed,
+        scale=scale,
+    )
+    if X_validation_imputed is None:
+        X_validation = None
+        X_test = scaled[0]
     else:
-        scaler.fit(X_train_imputed)
-        X_train = X_train_imputed.reset_index(drop=True)
-        X_test = X_test_imputed.reset_index(drop=True)
+        X_validation, X_test = scaled
 
     summary = {
         "record_type": "summary",
@@ -844,36 +1029,55 @@ def prepare_cicids2017(
         "scan_complete": all(bool(row["scan_complete"]) for row in report_rows),
         "chunks_read": sum(int(row["chunks_read"]) for row in report_rows),
         "rows_read": sum(int(row["rows_read"]) for row in report_rows),
-        "rows_missing_label_dropped": sum(int(row["rows_missing_label_dropped"]) for row in report_rows),
-        "rows_all_features_missing_dropped": sum(int(row["rows_all_features_missing_dropped"]) for row in report_rows),
-        "duplicate_rows_removed": sum(int(row["duplicate_rows_removed"]) for row in report_rows),
-        "nonfinite_values_replaced": sum(int(row["nonfinite_values_replaced"]) for row in report_rows),
-        "nonnumeric_values_coerced": sum(int(row["nonnumeric_values_coerced"]) for row in report_rows),
+        "rows_missing_label_dropped": sum(
+            int(row["rows_missing_label_dropped"]) for row in report_rows
+        ),
+        "rows_all_features_missing_dropped": sum(
+            int(row["rows_all_features_missing_dropped"]) for row in report_rows
+        ),
+        "duplicate_rows_removed": sum(
+            int(row["duplicate_rows_removed"]) for row in report_rows
+        ),
+        "nonfinite_values_replaced": sum(
+            int(row["nonfinite_values_replaced"]) for row in report_rows
+        ),
+        "nonnumeric_values_coerced": sum(
+            int(row["nonnumeric_values_coerced"]) for row in report_rows
+        ),
         "rows_after_cleaning": sum(int(row["rows_after_cleaning"]) for row in report_rows),
         "rows_retained_in_sample": int(len(sampled)),
         "train_records": int(len(X_train)),
+        "validation_records": int(len(X_validation)) if X_validation is not None else 0,
         "test_records": int(len(X_test)),
         "train_missing_values_imputed": train_missing_before,
+        "validation_missing_values_imputed": validation_missing_before,
         "test_missing_values_imputed": test_missing_before,
         "all_missing_training_columns_removed": len(all_missing_columns),
-        "stratification_strategy_effective": effective_stratification,
-        "rare_labels_pooled": int(rare_labels_pooled),
+        "test_stratification_strategy_effective": test_stratification,
+        "validation_stratification_strategy_effective": validation_stratification,
+        "test_rare_labels_pooled": int(test_rare_pooled),
+        "validation_rare_labels_pooled": int(validation_rare_pooled),
     }
+
     label_rows: list[dict[str, object]] = []
     for label in sorted(original_all.unique()):
-        all_count = int((original_all == label).sum())
-        train_count = int((train_original == label).sum())
-        test_count = int((test_original == label).sum())
-        label_rows.append({
-            "record_type": "label_distribution",
-            "source_file": "ALL_SOURCES",
-            "original_label": label,
-            "attack_category": map_cicids2017_attack_category(label, benign_label),
-            "binary_label": 0 if label.upper() == benign_label.upper() else 1,
-            "rows_retained_in_sample": all_count,
-            "train_records": train_count,
-            "test_records": test_count,
-        })
+        label_rows.append(
+            {
+                "record_type": "label_distribution",
+                "source_file": "ALL_SOURCES",
+                "original_label": label,
+                "attack_category": map_cicids2017_attack_category(label, benign_label),
+                "binary_label": 0 if label.upper() == benign_label.upper() else 1,
+                "rows_retained_in_sample": int((original_all == label).sum()),
+                "train_records": int((train_original == label).sum()),
+                "validation_records": (
+                    int((validation_original == label).sum())
+                    if validation_original is not None
+                    else 0
+                ),
+                "test_records": int((test_original == label).sum()),
+            }
+        )
     quality_report = pd.DataFrame([*report_rows, summary, *label_rows])
 
     metadata: dict[str, object] = {
@@ -881,19 +1085,27 @@ def prepare_cicids2017(
         "source_files": len(sources),
         "scan_complete": bool(summary["scan_complete"]),
         "sampled_records": int(len(sampled)),
+        "development_records": int(len(development_idx)),
         "train_records": int(len(X_train)),
+        "validation_records": int(len(X_validation)) if X_validation is not None else 0,
         "test_records": int(len(X_test)),
         "encoded_features": int(X_train.shape[1]),
         "train_normal_records": int(np.sum(y_train == 0)),
         "train_attack_records": int(np.sum(y_train == 1)),
+        "validation_normal_records": int(np.sum(y_validation == 0)) if y_validation is not None else 0,
+        "validation_attack_records": int(np.sum(y_validation == 1)) if y_validation is not None else 0,
         "test_normal_records": int(np.sum(y_test == 0)),
         "test_attack_records": int(np.sum(y_test == 1)),
-        "split_strategy": f"stratified_random:{effective_stratification}",
-        "rare_labels_pooled": int(rare_labels_pooled),
+        "test_split_strategy": f"stratified_random:{test_stratification}",
+        "validation_split_strategy": f"stratified_random:{validation_stratification}",
+        "test_rare_labels_pooled": int(test_rare_pooled),
+        "validation_rare_labels_pooled": int(validation_rare_pooled),
         "test_size": float(test_size),
+        "validation_size": validation_size,
         "sampling_strategy": sampling_strategy,
         "sampling_seed": int(sampling_seed),
         "split_seed": int(split_seed),
+        "validation_seed": int(validation_seed),
         "max_benign_records": int(max_benign_records),
         "max_records_per_attack_label": int(max_records_per_attack_label),
         "max_total_records": max_total_records,
@@ -912,4 +1124,8 @@ def prepare_cicids2017(
         scaler=scaler,
         metadata=metadata,
         data_quality_report=quality_report,
+        X_validation=X_validation,
+        y_validation=y_validation,
+        validation_original_labels=validation_original,
+        validation_attack_categories=validation_categories,
     )

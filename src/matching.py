@@ -1,8 +1,8 @@
-"""Detector matching functions for FW-LNSA.
+"""Binary detector matching functions used by FW-LNSA.
 
-Weighted SMC is the main operational matching variant in this repository.
-Standard Hamming is the classical NSA baseline, Weighted Hamming is an ablation,
-and Jaccard is an optional diagnostic for active-bit overlap.
+The confirmatory protocol uses weighted binary similarity as the canonical
+feature-weighted matching formulation. Weighted Hamming is retained as an
+algebraically equivalent implementation check when weights are normalized.
 """
 
 from __future__ import annotations
@@ -31,6 +31,8 @@ def normalize_weights(weights: np.ndarray, vector_length: int) -> np.ndarray:
         raise ValueError("weights must be one-dimensional.")
     if len(weights_array) != vector_length:
         raise ValueError(f"Expected {vector_length} weights, got {len(weights_array)}.")
+    if np.any(~np.isfinite(weights_array)):
+        raise ValueError("weights must contain only finite values.")
     if np.any(weights_array < 0):
         raise ValueError("weights cannot contain negative values.")
 
@@ -41,7 +43,7 @@ def normalize_weights(weights: np.ndarray, vector_length: int) -> np.ndarray:
 
 
 def hamming_distance_matrix(records: np.ndarray, detectors: np.ndarray) -> np.ndarray:
-    """Return Hamming distances with shape (n_records, n_detectors)."""
+    """Return Hamming distances with shape ``(n_records, n_detectors)``."""
 
     records_bin = as_binary_matrix(records, name="records")
     detectors_bin = as_binary_matrix(detectors, name="detectors")
@@ -55,7 +57,7 @@ def weighted_hamming_distance_matrix(
     detectors: np.ndarray,
     weights: np.ndarray,
 ) -> np.ndarray:
-    """Return Weighted Hamming distances with shape (n_records, n_detectors)."""
+    """Return normalized Weighted Hamming distances."""
 
     records_bin = as_binary_matrix(records, name="records")
     detectors_bin = as_binary_matrix(detectors, name="detectors")
@@ -67,15 +69,16 @@ def weighted_hamming_distance_matrix(
     return np.tensordot(differences.astype(float), normalized_weights, axes=([2], [0]))
 
 
-def weighted_smc_similarity_matrix(
+def weighted_binary_similarity_matrix(
     records: np.ndarray,
     detectors: np.ndarray,
     weights: np.ndarray,
 ) -> np.ndarray:
-    """Return Weighted SMC similarities with shape (n_records, n_detectors).
+    """Return normalized feature-weighted binary similarities.
 
-    Weighted SMC sums the weights of matching bit positions. Because weights
-    are normalized, similarity is in the range 0 to 1.
+    The score is the sum of normalized feature weights at matching bit
+    positions. For binary vectors and normalized weights it is exactly
+    ``1 - weighted_hamming_distance``.
     """
 
     records_bin = as_binary_matrix(records, name="records")
@@ -88,8 +91,18 @@ def weighted_smc_similarity_matrix(
     return np.tensordot(matches.astype(float), normalized_weights, axes=([2], [0]))
 
 
+def weighted_smc_similarity_matrix(
+    records: np.ndarray,
+    detectors: np.ndarray,
+    weights: np.ndarray,
+) -> np.ndarray:
+    """Backward-compatible alias for weighted binary similarity."""
+
+    return weighted_binary_similarity_matrix(records, detectors, weights)
+
+
 def jaccard_similarity_matrix(records: np.ndarray, detectors: np.ndarray) -> np.ndarray:
-    """Return Jaccard similarities with shape (n_records, n_detectors)."""
+    """Return Jaccard similarities with shape ``(n_records, n_detectors)``."""
 
     records_bin = as_binary_matrix(records, name="records").astype(bool)
     detectors_bin = as_binary_matrix(detectors, name="detectors").astype(bool)
@@ -98,7 +111,12 @@ def jaccard_similarity_matrix(records: np.ndarray, detectors: np.ndarray) -> np.
 
     intersection = np.sum(records_bin[:, None, :] & detectors_bin[None, :, :], axis=2)
     union = np.sum(records_bin[:, None, :] | detectors_bin[None, :, :], axis=2)
-    return np.divide(intersection, union, out=np.zeros_like(intersection, dtype=float), where=union != 0)
+    return np.divide(
+        intersection,
+        union,
+        out=np.zeros_like(intersection, dtype=float),
+        where=union != 0,
+    )
 
 
 def match_distance(distances: np.ndarray, threshold: float) -> np.ndarray:

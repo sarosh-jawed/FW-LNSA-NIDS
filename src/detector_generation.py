@@ -12,10 +12,17 @@ from .matching import (
     hamming_distance_matrix,
     jaccard_similarity_matrix,
     weighted_hamming_distance_matrix,
+    weighted_binary_similarity_matrix,
     weighted_smc_similarity_matrix,
 )
 
-MatchingMethod = Literal["hamming", "weighted_hamming", "weighted_smc", "jaccard"]
+MatchingMethod = Literal[
+    "hamming",
+    "weighted_hamming",
+    "weighted_similarity",
+    "weighted_smc",
+    "jaccard",
+]
 
 
 @dataclass(frozen=True)
@@ -136,10 +143,10 @@ def negative_selection(
                 raise ValueError("weights are required for weighted_hamming.")
             scores = weighted_hamming_distance_matrix(self_matrix, candidate_chunk, weights)
             rejected = np.any(scores <= threshold, axis=0)
-        elif method == "weighted_smc":
+        elif method in {"weighted_similarity", "weighted_smc"}:
             if weights is None:
-                raise ValueError("weights are required for weighted_smc.")
-            scores = weighted_smc_similarity_matrix(self_matrix, candidate_chunk, weights)
+                raise ValueError(f"weights are required for {method}.")
+            scores = weighted_binary_similarity_matrix(self_matrix, candidate_chunk, weights)
             rejected = np.any(scores >= threshold, axis=0)
         elif method == "jaccard":
             scores = jaccard_similarity_matrix(self_matrix, candidate_chunk)
@@ -196,10 +203,10 @@ def predict_with_detectors(
                 raise ValueError("weights are required for weighted_hamming prediction.")
             scores = weighted_hamming_distance_matrix(X_chunk, detectors, weights)
             matched = np.any(scores <= detection_threshold, axis=1)
-        elif method == "weighted_smc":
+        elif method in {"weighted_similarity", "weighted_smc"}:
             if weights is None:
-                raise ValueError("weights are required for weighted_smc prediction.")
-            scores = weighted_smc_similarity_matrix(X_chunk, detectors, weights)
+                raise ValueError(f"weights are required for {method} prediction.")
+            scores = weighted_binary_similarity_matrix(X_chunk, detectors, weights)
             matched = np.any(scores >= detection_threshold, axis=1)
         elif method == "jaccard":
             scores = jaccard_similarity_matrix(X_chunk, detectors)

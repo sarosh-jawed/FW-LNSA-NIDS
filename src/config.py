@@ -13,9 +13,15 @@ from typing import Any, Mapping
 
 import yaml
 
-SUPPORTED_METHODS = {"hamming", "weighted_hamming", "weighted_smc", "jaccard"}
+SUPPORTED_METHODS = {
+    "hamming",
+    "weighted_hamming",
+    "weighted_similarity",
+    "weighted_smc",
+    "jaccard",
+}
 DISTANCE_METHODS = {"hamming", "weighted_hamming"}
-SIMILARITY_METHODS = {"weighted_smc", "jaccard"}
+SIMILARITY_METHODS = {"weighted_similarity", "weighted_smc", "jaccard"}
 
 
 class ConfigurationError(ValueError):

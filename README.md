@@ -10,18 +10,17 @@ The main experimental direction is to evaluate whether feature-importance weight
 
 ## Research Contribution
 
-This repository implements FW-LNSA, a feature-weighted lightweight negative selection framework for anomaly-based network intrusion detection. The framework integrates feature-importance weights directly into detector matching and evaluates Hamming, Weighted Hamming, and Weighted SMC matching under controlled detector budgets, thresholds, seeds, runtime, retained-detector, and attack-category analyses.
+This repository implements FW-LNSA, a feature-weighted lightweight negative selection framework for anomaly-based network intrusion detection. The confirmatory protocol integrates training-derived feature weights into binary detector similarity, calibrates operating thresholds on validation data, and evaluates locked procedures on untouched test partitions.
 
-The paper contribution should be framed carefully:
+The final research framing is:
 
 - **Main method:** FW-LNSA, Feature-Weighted Lightweight Negative Selection Algorithm.
-- **Main operational matching variant:** Weighted SMC inside FW-LNSA.
-- **Ablation / comparison:** Weighted Hamming.
-- **Classical comparison:** Standard Hamming.
-- **Optional diagnostic:** Jaccard similarity.
-- **Secondary extension:** TP-FW-LNSA as a two-phase pilot, not the main title unless strengthened later.
+- **Canonical weighted formulation:** feature-weighted binary similarity.
+- **Classical comparison:** unweighted Hamming NSA.
+- **Equivalence verification:** Weighted Hamming, because normalized weighted similarity equals one minus normalized Weighted Hamming distance.
+- **Secondary extension:** TP-FW-LNSA remains a pilot or future direction.
 
-This repository does **not** claim that Weighted Hamming or Weighted SMC is a newly invented distance/similarity measure. The contribution is the controlled feature-weighted NSA framework, reproducible evaluation protocol, and analysis of matching behavior, false positives, detector retention, runtime, and attack-category performance.
+The repository does not claim that Weighted Hamming or weighted binary similarity is a newly invented metric. The contribution is the feature-weighted NSA framework, validation-calibrated low-FPR protocol, detector-efficiency analysis, and reproducible cross-dataset study of matching, representation size, detector budget, false positives, stability, and attack-category behavior.
 
 ## Repository Structure
 
@@ -39,7 +38,8 @@ FW-LNSA-NIDS/
 │   ├── 03_cicids2017_exploration.ipynb
 │   ├── 04_nsl_kdd_research_execution.ipynb
 │   ├── 05_cicids2017_research_execution.ipynb
-│   └── 06_baseline_and_ablation_research_execution.ipynb
+│   ├── 06_baseline_and_ablation_research_execution.ipynb
+│   └── 07_confirmatory_research_execution.ipynb
 ├── src/
 │   ├── __init__.py
 │   ├── config.py
@@ -55,12 +55,14 @@ FW-LNSA-NIDS/
 │   ├── experiments.py
 │   ├── research_execution.py
 │   ├── statistical_analysis.py
+│   ├── confirmatory_protocol.py
 │   └── utils.py
 ├── configs/
 │   ├── nsl_kdd_fw_lnsa.yaml
 │   ├── cicids2017_fw_lnsa.yaml
 │   ├── baseline_models.yaml
-│   └── research_execution.yaml
+│   ├── research_execution.yaml
+│   └── confirmatory_protocol.yaml
 ├── scripts/
 │   ├── run_nsl_kdd_fw_lnsa.py
 │   ├── run_cicids2017_fw_lnsa.py
@@ -72,13 +74,16 @@ FW-LNSA-NIDS/
 │   ├── validate_research_execution.py
 │   ├── run_research_suite.py
 │   ├── summarize_research_results.py
-│   └── make_research_figures.py
+│   ├── make_research_figures.py
+│   ├── run_confirmatory_protocol.py
+│   └── validate_confirmatory_protocol.py
 ├── tests/
 │   ├── test_core_modules.py
 │   ├── test_fw_lnsa_pipeline.py
 │   ├── test_cicids2017_pipeline.py
 │   ├── test_baseline_pipeline.py
-│   └── test_research_execution.py
+│   ├── test_research_execution.py
+│   └── test_confirmatory_protocol.py
 ├── results/
 │   ├── tables/
 │   └── figures/
@@ -104,7 +109,10 @@ Required datasets before manuscript writing:
    - Purpose:
      - controlled feasibility benchmark
      - FS-10 / FS-20 comparison
-     - attack-category analysis for Normal, DoS, Probe, R2L, and U2R
+     - family-level attack analysis when the supplied test file preserves detailed attack names
+   - Data-integrity note:
+     - some redistributed `KDDTest+.txt` files contain only `Normal` and `Attack` labels
+     - the pipeline reports `Attack (Unspecified)` for those files rather than inventing DoS, Probe, R2L, or U2R labels
 
 2. **CICIDS2017**
    - Expected input:
@@ -293,6 +301,90 @@ The three Colab notebooks in `notebooks/04` through `notebooks/06` provide the
 same commands with Google Drive persistence and private GitHub access through
 Colab Secrets.
 
+
+### Validation-calibrated confirmatory protocol
+
+The exploratory research grid is preserved for sensitivity analysis, but final
+paper claims must use the three-way confirmatory protocol. The protocol fits
+preprocessing, feature selection, binary medians, and detector pools on the
+training partition. It calibrates target-FPR operating thresholds and selects
+configurations on validation data. Only then does it evaluate the locked
+procedure on the untouched test partition.
+
+Validate the implementation:
+
+```bash
+python scripts/validate_confirmatory_protocol.py
+```
+
+Review the exact workload without loading data:
+
+```bash
+python scripts/run_confirmatory_protocol.py \
+  --config configs/confirmatory_protocol.yaml \
+  --profile confirmatory \
+  --plan-only
+```
+
+Run a local or Colab smoke verification first:
+
+```bash
+python scripts/run_confirmatory_protocol.py \
+  --config configs/confirmatory_protocol.yaml \
+  --profile smoke \
+  --dataset all \
+  --stage all
+```
+
+Run final validation tuning into a new persistent output directory:
+
+```bash
+python scripts/run_confirmatory_protocol.py \
+  --config configs/confirmatory_protocol.yaml \
+  --profile confirmatory \
+  --dataset all \
+  --stage tune \
+  --output-dir results_confirmatory
+```
+
+Inspect both `locked_configurations.csv` files before final evaluation. Then run:
+
+```bash
+python scripts/run_confirmatory_protocol.py \
+  --config configs/confirmatory_protocol.yaml \
+  --profile confirmatory \
+  --dataset all \
+  --stage confirm \
+  --output-dir results_confirmatory
+```
+
+The final profile uses:
+
+- FS-10 and FS-20
+- Detector budgets 500, 1000, 2500, and 5000
+- Tuning seeds 42 through 46
+- Unseen confirmatory seeds 100 through 119
+- Target FPR procedures 0.10, 0.05, and 0.01
+- Hamming and FW-LNSA weighted similarity
+
+Each dataset saves row-level progress journals, dataset fingerprints, partition
+hashes, feature-selection hashes, a validation-selected configuration lock,
+seed-level final results, aggregated 95% confidence intervals, category tables,
+and an execution manifest. The test metrics are explicitly excluded from
+configuration selection.
+
+The Colab workflow is available in:
+
+```text
+notebooks/07_confirmatory_research_execution.ipynb
+```
+
+The exact methodological contract is documented in:
+
+```text
+docs/methodology_notes/confirmatory_protocol.md
+```
+
 ## Main Experiments
 
 ### NSL-KDD FW-LNSA
@@ -318,10 +410,12 @@ Primary settings:
 | Feature selection | Mutual information with binary indicators treated as discrete |
 | Representation | Binary median split |
 | Detector budgets | 500, 1000, 2500, 5000 |
-| Seeds | 42, 43, 44, 45, 46 |
-| Matching methods | Hamming, Weighted Hamming, Weighted SMC |
-| Diagnostic only | Jaccard |
-| Metrics | Accuracy, precision, recall, F1, FPR, runtime, retained detectors |
+| Tuning seeds | 42, 43, 44, 45, 46 |
+| Confirmatory seeds | 100 through 119 |
+| Final methods | Hamming NSA, FW-LNSA weighted similarity |
+| Equivalence verification | Weighted Hamming |
+| Diagnostic only | Jaccard in exploratory analyses |
+| Metrics | Accuracy, precision, recall, F1, FPR, specificity, balanced accuracy, MCC, PR-AUC, ROC-AUC, runtime, throughput, model size, memory, retained detectors |
 
 ### CICIDS2017 FW-LNSA
 
@@ -421,14 +515,16 @@ seed results, rather than from one favorable seed. Mutual-information scores
 are computed once per prepared partition and reused to create nested FS-10 and
 FS-20 selections.
 
-Planned summary table:
+Final confirmatory summary template:
 
-| Dataset | Method | Feature Set | Recall | F1 | FPR | Runtime | Retained Detectors |
-|---|---|---|---:|---:|---:|---:|---:|
-| NSL-KDD | Weighted SMC FW-LNSA | FS-20 | TBD | TBD | TBD | TBD | TBD |
-| NSL-KDD | Weighted Hamming | FS-20 | TBD | TBD | TBD | TBD | TBD |
-| NSL-KDD | Hamming | FS-20 | TBD | TBD | TBD | TBD | TBD |
-| CICIDS2017 | Weighted SMC FW-LNSA | FS-20 | TBD | TBD | TBD | TBD | TBD |
+| Dataset | Method | Feature Set | Target FPR | Recall | F1 | Observed FPR | Throughput | Retained Detectors |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| NSL-KDD | FW-LNSA weighted similarity | FS-20 | TBD | TBD | TBD | TBD | TBD | TBD |
+| NSL-KDD | Hamming NSA | FS-20 | TBD | TBD | TBD | TBD | TBD | TBD |
+| CICIDS2017 | FW-LNSA weighted similarity | FS-20 | TBD | TBD | TBD | TBD | TBD | TBD |
+| CICIDS2017 | Hamming NSA | FS-20 | TBD | TBD | TBD | TBD | TBD | TBD |
+
+Weighted Hamming is reported only as a mathematical and software-equivalence check. It is not treated as a separate contribution or independently tuned final method.
 
 ## Citation
 
