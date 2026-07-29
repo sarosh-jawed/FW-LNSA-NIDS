@@ -25,6 +25,8 @@ data/processed/
 *.h5
 
 # Large outputs / temporary experiment artifacts
+results_confirmatory/
+results_confirmatory_*/
 results/raw_results/
 results/tmp/
 results/progress/
