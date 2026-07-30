@@ -554,3 +554,55 @@ Authorship and task ownership should be documented through commits, experiment l
 This repository is released under the MIT License unless changed by the authors before submission.
 
 Dataset files are not covered by this repository license. Follow each dataset provider's terms and citation requirements.
+
+## Final Manuscript Readiness Workflow
+
+The final pre-writing workflow is implemented in:
+
+```text
+configs/manuscript_readiness.yaml
+src/confirmatory_baselines.py
+src/manuscript_analysis.py
+scripts/run_confirmatory_baselines.py
+scripts/analyze_confirmatory_results.py
+scripts/validate_manuscript_readiness.py
+scripts/build_manuscript_handoff.py
+notebooks/08_manuscript_readiness_execution.ipynb
+```
+
+This workflow recreates the locked three-way dataset partitions, loads the exact
+saved FS-10 and FS-20 feature sets, verifies dataset SHA-256 fingerprints and
+partition hashes, and then runs Logistic Regression, Decision Tree, Random
+Forest, and Isolation Forest under the same confirmatory data contract.
+
+Baseline operating thresholds are calibrated using benign validation scores at
+target FPR values of 0.10, 0.05, and 0.01. The test partition is evaluated only
+after the procedure and threshold are fixed. The final baseline profile uses
+confirmatory seeds 100 through 119 and produces 480 rows per dataset.
+
+The manuscript analysis generates:
+
+- paired Hamming versus weighted-similarity comparisons
+- bootstrap confidence intervals
+- Wilcoxon signed-rank tests
+- rank-biserial effect sizes
+- Holm-adjusted p-values
+- validation-to-test FPR calibration diagnostics
+- FS-10 versus FS-20 ablations
+- efficiency and model-footprint summaries
+- category-level recall evidence
+- publication tables in CSV and LaTeX formats
+- publication-resolution figures
+- a machine-checked readiness audit
+
+Run the complete Colab workflow from:
+
+```text
+notebooks/08_manuscript_readiness_execution.ipynb
+```
+
+The final notebook creates a focused writer package named
+`writer_handoff.zip`. Raw datasets, smoke outputs, and superseded result
+archives are intentionally excluded. The private GitHub repository remains the
+code source of truth; the writer handoff archive is the manuscript-evidence
+source of truth.
