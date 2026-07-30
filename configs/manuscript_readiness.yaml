@@ -1,0 +1,121 @@
+# Final confirmatory comparisons, statistical audit, and manuscript handoff.
+# The final test partitions remain read-only. Baseline thresholds are calibrated
+# exclusively on benign validation scores from the locked three-way protocol.
+
+active_profile: smoke
+
+paths:
+  confirmatory_config: configs/confirmatory_protocol.yaml
+  confirmatory_results_dir: results_confirmatory
+  manuscript_results_dir: results_manuscript
+  handoff_dir: results_manuscript/writer_handoff
+
+baseline:
+  datasets: [nsl_kdd, cicids2017]
+  feature_sizes: [10, 20]
+  seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119]
+  target_fprs: [0.10, 0.05, 0.01]
+  models:
+    logistic_regression:
+      enabled: true
+      parameters:
+        solver: liblinear
+        max_iter: 2000
+        class_weight: balanced
+    decision_tree:
+      enabled: true
+      parameters:
+        class_weight: balanced
+        max_depth: 20
+        min_samples_leaf: 2
+    random_forest:
+      enabled: true
+      parameters:
+        n_estimators: 150
+        class_weight: balanced_subsample
+        max_depth: 20
+        min_samples_leaf: 2
+        n_jobs: -1
+    isolation_forest:
+      enabled: true
+      parameters:
+        n_estimators: 150
+        contamination: auto
+        max_samples: auto
+        n_jobs: -1
+
+statistics:
+  confidence: 0.95
+  alpha: 0.05
+  bootstrap_iterations: 5000
+  random_seed: 2026
+  primary_metrics: [test_f1, test_recall, test_fpr, test_balanced_accuracy, test_mcc]
+  secondary_metrics:
+    - retention_rate
+    - test_detection_time_sec
+    - test_prediction_records_per_sec
+    - serialized_model_bytes
+    - test_peak_prediction_rss_delta_mb
+
+readiness:
+  expected_confirmatory_rows_per_dataset: 240
+  expected_locked_configurations_per_dataset: 12
+  expected_tuning_rows_per_dataset: 720
+  expected_confirmatory_seed_count: 20
+  expected_baseline_models: 4
+  expected_baseline_feature_sets: 2
+  expected_target_fprs: 3
+
+writer:
+  project_title: "Feature-Weighted Lightweight Negative Selection for Anomaly-Based Network Intrusion Detection"
+  target_journal: "TO BE CONFIRMED WITH THE SUPERVISOR"
+  authors:
+    - name: "Sarosh Jawed"
+      role: "First author"
+      affiliation: "Emporia State University, Emporia, Kansas, United States"
+      email: "TO BE CONFIRMED"
+      orcid: "TO BE CONFIRMED"
+    - name: "Tanazzah"
+      role: "Second author"
+      affiliation: "TO BE CONFIRMED"
+      email: "TO BE CONFIRMED"
+      orcid: "TO BE CONFIRMED"
+    - name: "Suraiya Akter"
+      role: "Supervising author"
+      affiliation: "Emporia State University, Emporia, Kansas, United States"
+      email: "TO BE CONFIRMED"
+      orcid: "TO BE CONFIRMED"
+
+profiles:
+  smoke:
+    baseline:
+      datasets: [nsl_kdd]
+      feature_sizes: [10]
+      seeds: [100]
+      target_fprs: [0.10]
+      models:
+        logistic_regression:
+          enabled: true
+        decision_tree:
+          enabled: true
+        random_forest:
+          enabled: true
+          parameters:
+            n_estimators: 10
+            n_jobs: 1
+        isolation_forest:
+          enabled: true
+          parameters:
+            n_estimators: 10
+            n_jobs: 1
+    statistics:
+      bootstrap_iterations: 200
+
+  final:
+    baseline:
+      datasets: [nsl_kdd, cicids2017]
+      feature_sizes: [10, 20]
+      seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119]
+      target_fprs: [0.10, 0.05, 0.01]
+    statistics:
+      bootstrap_iterations: 5000
