@@ -13,7 +13,6 @@ from src.confirmatory_baselines import (
     _attack_scores,
     _fit_and_score,
     load_manuscript_config,
-    load_locked_feature_sets,
     summarize_confirmatory_baselines,
     verify_confirmatory_contract,
 )

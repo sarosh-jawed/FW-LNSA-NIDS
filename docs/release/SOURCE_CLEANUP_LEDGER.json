@@ -1,0 +1,38 @@
+[
+  {
+    "path": "src/confirmatory_protocol.py",
+    "executed_sha256": "3376e3c57a74c3590b037c00972dcf49ea369f6ecfc32ad0325bc2fe4690783e",
+    "release_sha256": "eb5a0113b59014dd28e2e73fc8556f83349265f303a2e3f7b524890162531496",
+    "before": "import time\n",
+    "after": "",
+    "scope": "Non-algorithmic static cleanup. Unused binding preserves the original configuration-key access.",
+    "byte_offset": 402
+  },
+  {
+    "path": "src/detector_generation.py",
+    "executed_sha256": "2eacfef0534584f5a97ccea16c78ea6d5b8250c502a7d730d60e9a2e6ec1a9f1",
+    "release_sha256": "15a84af4f71a29bd646e6f7ee8e56867b8ac04e808eeb562b03cc9318da19299",
+    "before": "    weighted_smc_similarity_matrix,\n",
+    "after": "",
+    "scope": "Non-algorithmic static cleanup. Unused binding preserves the original configuration-key access.",
+    "byte_offset": 372
+  },
+  {
+    "path": "src/experiments.py",
+    "executed_sha256": "fbee920701f99feca083e24f939ee6680ddc1dd5943f2afac54e4d9ff35e62e6",
+    "release_sha256": "cddb7971d1637e8a7d738d9b46282e146fedfae003458878d606726ccfaa7839",
+    "before": "    preprocessing = config[\"preprocessing\"]\n    method_settings = config[\"method_settings\"]\n",
+    "after": "    preprocessing = config[\"preprocessing\"]\n    _ = config[\"method_settings\"]\n",
+    "scope": "Non-algorithmic static cleanup. Unused binding preserves the original configuration-key access.",
+    "byte_offset": 14881
+  },
+  {
+    "path": "scripts/validate_manuscript_readiness.py",
+    "executed_sha256": "abb8c1fde91a0e24572eab635323b4c681bb7e29f1946591de5dca4805837060",
+    "release_sha256": "77a7e68f8e9f772cc367af6091714d3cb4bc44cab0d0891812ce6cb53187c964",
+    "before": "from pathlib import Path\nimport sys\n",
+    "after": "from pathlib import Path\n",
+    "scope": "Non-algorithmic static cleanup. Unused binding preserves the original configuration-key access.",
+    "byte_offset": 171
+  }
+]

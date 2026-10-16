@@ -1,0 +1,16 @@
+# Python 3.12. Original scientific libraries preserved; secondary tooling pinned.
+numpy==2.0.2
+pandas==2.2.2
+scikit-learn==1.6.1
+scipy==1.16.3
+PyYAML==6.0.3
+psutil==5.9.5
+joblib==1.5.3
+matplotlib==3.10.8
+seaborn==0.13.2
+Jinja2==3.1.6
+pytest==8.3.5
+ruff==0.11.13
+nbformat==5.10.4
+nbclient==0.10.2
+ipykernel==6.29.5

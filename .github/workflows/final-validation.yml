@@ -1,0 +1,19 @@
+name: Final research validation software
+on: [push, pull_request]
+jobs:
+  software:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-release-lock.txt
+      - run: python -m ruff check src scripts tests
+      - run: python -m compileall -q src scripts
+      - run: python scripts/check_release_cleanliness.py
+      - run: python -m pytest -q
+        env:
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'

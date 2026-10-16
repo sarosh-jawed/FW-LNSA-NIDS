@@ -1,0 +1,13 @@
+partition_a,partition_b,shared_patterns,dataset_key,fs_size
+train,validation,166,nsl_kdd,10
+train,test,130,nsl_kdd,10
+validation,test,117,nsl_kdd,10
+train,validation,700,nsl_kdd,20
+train,test,407,nsl_kdd,20
+validation,test,356,nsl_kdd,20
+train,validation,50,cicids2017,10
+train,test,55,cicids2017,10
+validation,test,50,cicids2017,10
+train,validation,285,cicids2017,20
+train,test,332,cicids2017,20
+validation,test,275,cicids2017,20

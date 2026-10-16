@@ -1,0 +1,16 @@
+original_label,category,train_support,validation_support,test_support
+BENIGN,Normal,27810,6953,14898
+Bot,Bot,29,7,16
+DDoS,DoS/DDoS,1751,438,938
+DoS GoldenEye,DoS/DDoS,145,36,77
+DoS Hulk,DoS/DDoS,2345,586,1257
+DoS Slowhttptest,DoS/DDoS,74,19,40
+DoS slowloris,DoS/DDoS,71,18,38
+FTP-Patator,Brute Force,86,21,46
+Heartbleed,Heartbleed,1,0,0
+Infiltration,Infiltration,1,0,0
+PortScan,PortScan,1221,305,654
+SSH-Patator,Brute Force,41,11,22
+Web Attack - Brute Force,Brute Force,17,4,9
+Web Attack - Sql Injection,Web Attack,0,0,1
+Web Attack - XSS,Web Attack,8,2,4

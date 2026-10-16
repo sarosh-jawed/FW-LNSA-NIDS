@@ -423,7 +423,7 @@ def run_experiment_grid(
     feature_config = config["feature_selection"]
     experiment = config["experiment"]
     preprocessing = config["preprocessing"]
-    method_settings = config["method_settings"]
+    _ = config["method_settings"]
 
     prepared_sets = prepare_feature_sets(
         dataset,

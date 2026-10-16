@@ -1,0 +1,21 @@
+archive,figure,replacement,reason
+archived_colab,cicids2017_binary_patterns,F05,Combine representation and conditional selection-stability diagnostics; complete frequencies remain inCSV
+archived_colab,cicids2017_category_support_recall,F08,"Support and seed intervals explicit; final display uses FS20,target0.05 (original accepted category artwork used0.01)"
+archived_colab,cicids2017_feature_stability,F05,Combine representation and conditional selection-stability diagnostics; complete frequencies remain inCSV
+archived_colab,controlled_storage_throughput,F09,"Separate throughput,serialized scopes and timed-stage absoluteRSS; no crowded point labels"
+archived_colab,historical_storage_throughput_context,PRIVATE_HISTORICAL_CONTEXT,Uncontrolled historical resource measurements are not new benchmark evidence
+archived_colab,nsl_kdd_binary_patterns,F05,Combine representation and conditional selection-stability diagnostics; complete frequencies remain inCSV
+archived_colab,nsl_kdd_category_support_recall,OMIT,NSL family labels unavailable; binary-only dot is redundant
+archived_colab,nsl_kdd_feature_stability,F05,Combine representation and conditional selection-stability diagnostics; complete frequencies remain inCSV
+archived_colab,original_test_f1_vs_realized_fpr,F03,Combine F1/recall; avoid lines implying matched observed FPR; add/preserve intervals
+archived_colab,original_test_recall_vs_realized_fpr,F03,Combine F1/recall; avoid lines implying matched observed FPR; add/preserve intervals
+archived_colab,original_validation_vs_test_fpr,F04,Explicit method/features and marginal seed intervals
+archived_colab,paired_f1_original_120_family,F02,Paired intervals added/preserved; original120-test family
+archived_colab,cicids2017_feature_count,F06,Combine feature-count and self-cap development diagnostics
+archived_colab,nsl_kdd_feature_count,F06,Combine feature-count and self-cap development diagnostics
+accepted_original,cicids2017_category_recall,F08,"Support and seed intervals explicit; final display uses FS20,target0.05 (original accepted category artwork used0.01)"
+accepted_original,f1_vs_observed_fpr,F03,Combine F1/recall; avoid lines implying matched observed FPR; add/preserve intervals
+accepted_original,model_size_vs_throughput,PRIVATE_HISTORICAL_CONTEXT,Uncontrolled historical resource measurements are not new benchmark evidence
+accepted_original,paired_weighted_vs_hamming_f1,F02,Paired intervals added/preserved; original120-test family
+accepted_original,recall_vs_observed_fpr,F03,Combine F1/recall; avoid lines implying matched observed FPR; add/preserve intervals
+accepted_original,validation_vs_test_fpr,F04,Explicit method/features and marginal seed intervals

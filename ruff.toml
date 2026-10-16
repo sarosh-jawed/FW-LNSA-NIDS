@@ -1,0 +1,12 @@
+# Historical direct-entry scripts establish the repository import path first.
+# Ignore only that intentional import position, not unused imports or variables.
+[lint.per-file-ignores]
+"scripts/analyze_confirmatory_results.py" = ["E402"]
+"scripts/build_manuscript_handoff.py" = ["E402"]
+"scripts/run_baselines.py" = ["E402"]
+"scripts/run_cicids2017_fw_lnsa.py" = ["E402"]
+"scripts/run_confirmatory_baselines.py" = ["E402"]
+"scripts/run_nsl_kdd_fw_lnsa.py" = ["E402"]
+"scripts/run_research_suite.py" = ["E402"]
+"scripts/summarize_research_results.py" = ["E402"]
+"scripts/validate_manuscript_readiness.py" = ["E402"]

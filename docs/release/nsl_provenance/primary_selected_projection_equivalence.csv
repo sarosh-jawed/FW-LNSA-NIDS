@@ -1,0 +1,3 @@
+fs_size,selected_features,rows,identical_selected_values,different_selected_cells,scope
+10,10,22544,True,0,PRIMARY SELECTED PROJECTION ONLY; does not waive raw41-column family alignment rule
+20,20,22544,True,0,PRIMARY SELECTED PROJECTION ONLY; does not waive raw41-column family alignment rule

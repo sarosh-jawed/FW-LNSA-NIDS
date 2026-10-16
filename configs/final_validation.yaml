@@ -1,0 +1,56 @@
+version: 1.0.0
+base_commit: 8496b94717c85566748c767c387f999d76bdc9a7
+# CLI requires --profile explicitly; no active/default scientific profile.
+profiles:
+  smoke:
+    synthetic: true
+    resamples: 3
+    bootstrap_iterations: 200
+    detector_budget: 20
+    development_seeds: [42]
+    replay_seeds: [100]
+    benchmark_repeats: 2
+  full:
+    synthetic: false
+    resamples: 30
+    development_seeds: [42, 43, 44, 45, 46]
+    replay_seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119]
+    benchmark_repeats: 10
+feature_stability:
+  first_seed: 3000
+  fraction: 0.8
+  preprocessing_scope: original training-fitted encoding/imputation/scaling held fixed; MI refitted on each stratified 80-percent training-only resample
+  sizes: [10, 20]
+development:
+  target_fpr: 0.05
+  self_caps: [2500, 5000, 10000]
+  feature_counts: [5, 10, 15, 20, 30]
+  configuration: locked original FS-20 budget and self-threshold ratio/direct value; no post-hoc optimization
+mrmr:
+  formulation: MID relevance minus mean redundancy
+  estimator: empirical discrete mutual information in nats for both terms; train quantile bins up to 10
+  ties: lexical feature name
+sample120k:
+  sample_size: 120000
+  sampling_seed: 42
+  split_seed: 42
+  validation_seed: 2026
+  tuning_seeds: [200, 201, 202, 203, 204]
+  evaluation_seeds: [300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319]
+  detector_budgets: [500, 1000, 2500, 5000]
+  feature_sizes: [20]
+  target_fprs: [0.05]
+  tie_breaks: validation F1 desc, recall desc, FPR asc, detector budget asc, self-threshold config asc, method lexical
+benchmark:
+  fs_size: 20
+  target_fprs: [0.01, 0.05]
+  seed: 100
+  batch_size: 250
+  warmups_per_process: 1
+  process_per_repeat: true
+  rss_interval_seconds: 0.001
+  includes: binary detector scoring and threshold comparison
+  excludes: preprocessing, model loading, fit, disk IO
+optional_holdout:
+  status: BLOCKED
+  reason: No prespecified interpretable class-balanced scenario/day holdout contract; not comparable to original random flow split.

@@ -1,0 +1,245 @@
+{
+  "datasets": {
+    "nsl_kdd": {
+      "dataset": "NSL-KDD",
+      "development_records": 125973,
+      "train_records": 100778,
+      "validation_records": 25195,
+      "test_records": 22544,
+      "encoded_features": 122,
+      "train_normal_records": 53874,
+      "train_attack_records": 46904,
+      "validation_normal_records": 13469,
+      "validation_attack_records": 11726,
+      "test_normal_records": 9711,
+      "test_attack_records": 12833,
+      "validation_size": 0.2,
+      "validation_seed": 2026,
+      "validation_stratification_effective": "original_label",
+      "validation_rare_labels_pooled": 0,
+      "test_attack_category_resolution": "binary_only"
+    },
+    "cicids2017": {
+      "dataset": "CICIDS2017",
+      "source_files": 8,
+      "scan_complete": true,
+      "sampled_records": 60000,
+      "development_records": 42000,
+      "train_records": 33600,
+      "validation_records": 8400,
+      "test_records": 18000,
+      "encoded_features": 78,
+      "train_normal_records": 27810,
+      "train_attack_records": 5790,
+      "validation_normal_records": 6953,
+      "validation_attack_records": 1447,
+      "test_normal_records": 14898,
+      "test_attack_records": 3102,
+      "test_split_strategy": "stratified_random:original_label_with_rare_pooling",
+      "validation_split_strategy": "stratified_random:original_label_with_rare_pooling",
+      "test_rare_labels_pooled": 3,
+      "validation_rare_labels_pooled": 2,
+      "test_size": 0.3,
+      "validation_size": 0.2,
+      "sampling_strategy": "global_cap",
+      "sampling_seed": 42,
+      "split_seed": 42,
+      "validation_seed": 2026,
+      "max_benign_records": 30000,
+      "max_records_per_attack_label": 7500,
+      "max_total_records": 60000,
+      "removed_all_missing_columns": []
+    }
+  },
+  "secondary120k": {
+    "dataset": "CICIDS2017",
+    "source_files": 8,
+    "scan_complete": true,
+    "sampled_records": 120000,
+    "development_records": 84000,
+    "train_records": 67200,
+    "validation_records": 16800,
+    "test_records": 36000,
+    "encoded_features": 78,
+    "train_normal_records": 55678,
+    "train_attack_records": 11522,
+    "validation_normal_records": 13920,
+    "validation_attack_records": 2880,
+    "test_normal_records": 29828,
+    "test_attack_records": 6172,
+    "test_split_strategy": "stratified_random:original_label_with_rare_pooling",
+    "validation_split_strategy": "stratified_random:original_label_with_rare_pooling",
+    "test_rare_labels_pooled": 2,
+    "validation_rare_labels_pooled": 2,
+    "test_size": 0.3,
+    "validation_size": 0.2,
+    "sampling_strategy": "global_cap",
+    "sampling_seed": 42,
+    "split_seed": 42,
+    "validation_seed": 2026,
+    "max_benign_records": 30000,
+    "max_records_per_attack_label": 7500,
+    "max_total_records": 120000,
+    "removed_all_missing_columns": []
+  },
+  "partition_and_feature_fingerprints": {
+    "nsl_kdd": [
+      {
+        "type": "partition",
+        "key": "train_partition_hash",
+        "expected": "57259b1868ebcb94e629e41eed23644f0056d2790cc4d05387c1522320cd027f",
+        "actual": "57259b1868ebcb94e629e41eed23644f0056d2790cc4d05387c1522320cd027f",
+        "passed": true
+      },
+      {
+        "type": "partition",
+        "key": "validation_partition_hash",
+        "expected": "8efcd2371d62fedb0d7182800226d4f11fa31f77a3bc7af27bbf0130e9097870",
+        "actual": "8efcd2371d62fedb0d7182800226d4f11fa31f77a3bc7af27bbf0130e9097870",
+        "passed": true
+      },
+      {
+        "type": "partition",
+        "key": "test_partition_hash",
+        "expected": "1d543ea36e5220d64b4ca4b250b1b0ddbbe98fe3aa3decec6ab005bf7daa9996",
+        "actual": "1d543ea36e5220d64b4ca4b250b1b0ddbbe98fe3aa3decec6ab005bf7daa9996",
+        "passed": true
+      },
+      {
+        "type": "features",
+        "key": "FS-10",
+        "expected": "31ddff803043a493bfdee451a3da9d7e17e6cef3f8130102c244ce583012621a",
+        "actual": "31ddff803043a493bfdee451a3da9d7e17e6cef3f8130102c244ce583012621a",
+        "passed": true
+      },
+      {
+        "type": "features",
+        "key": "FS-20",
+        "expected": "361b2a47c4b6fe8ff4efaac7aaf0b1568e50d41799b80629e5b1a2a17c08cdae",
+        "actual": "361b2a47c4b6fe8ff4efaac7aaf0b1568e50d41799b80629e5b1a2a17c08cdae",
+        "passed": true
+      }
+    ],
+    "cicids2017": [
+      {
+        "type": "partition",
+        "key": "train_partition_hash",
+        "expected": "a2408e4c6eb75fed70f61df38b53e1347a4f92e6952551d4296897fc391a4ac1",
+        "actual": "a2408e4c6eb75fed70f61df38b53e1347a4f92e6952551d4296897fc391a4ac1",
+        "passed": true
+      },
+      {
+        "type": "partition",
+        "key": "validation_partition_hash",
+        "expected": "60f2ef82431a73d0c7d359cd1f51e125cead93cd0c20495767e7b3062aaf3314",
+        "actual": "60f2ef82431a73d0c7d359cd1f51e125cead93cd0c20495767e7b3062aaf3314",
+        "passed": true
+      },
+      {
+        "type": "partition",
+        "key": "test_partition_hash",
+        "expected": "ebf4e2dd07e30542ab038a175b2cd03537cee5e0c74535970fc9d3bf744e49d7",
+        "actual": "ebf4e2dd07e30542ab038a175b2cd03537cee5e0c74535970fc9d3bf744e49d7",
+        "passed": true
+      },
+      {
+        "type": "features",
+        "key": "FS-10",
+        "expected": "42ce65f2948eba9ff9a59384f05daca30ef9de3ea5697340016fd3e6b2ca7865",
+        "actual": "42ce65f2948eba9ff9a59384f05daca30ef9de3ea5697340016fd3e6b2ca7865",
+        "passed": true
+      },
+      {
+        "type": "features",
+        "key": "FS-20",
+        "expected": "316b56f829f4c8cdfa993c173721f906722abd9082196dbf5ce4a081792be1fd",
+        "actual": "316b56f829f4c8cdfa993c173721f906722abd9082196dbf5ce4a081792be1fd",
+        "passed": true
+      }
+    ]
+  },
+  "raw_input_hashes": {
+    "nsl_kdd": [
+      {
+        "file": "KDDTrain+.txt",
+        "expected_sha256": "0b732256db3e34094774988f8f902966db7fde73d4984c002d6726d201f2523c",
+        "actual_sha256": "0b732256db3e34094774988f8f902966db7fde73d4984c002d6726d201f2523c",
+        "passed": true
+      },
+      {
+        "file": "KDDTest+.txt",
+        "expected_sha256": "a5c2c0df447353a2d28000d3fd834678b59f6f3bc2a8b4ccf8a1787161eb9f17",
+        "actual_sha256": "a5c2c0df447353a2d28000d3fd834678b59f6f3bc2a8b4ccf8a1787161eb9f17",
+        "passed": true
+      }
+    ],
+    "cicids2017": [
+      {
+        "file": "MachineLearningCSV.zip",
+        "expected_sha256": "c3f26274b36c837ccf28ffd2dbf4582941c30b3ee70a635c6e5b2f87c4727928",
+        "actual_sha256": "c3f26274b36c837ccf28ffd2dbf4582941c30b3ee70a635c6e5b2f87c4727928",
+        "passed": true
+      }
+    ]
+  },
+  "environment": {
+    "python": "3.12.13 (main, Aug  7 2026, 02:25:39) [Clang 22.1.3 ]",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "cpu_model": "AMD EPYC 7B12",
+    "cpu_count": 8,
+    "packages": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.2",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.6.1",
+      "psutil": "5.9.5",
+      "PyYAML": "6.0.3",
+      "matplotlib": "3.10.8",
+      "pytest": "8.3.5",
+      "ruff": "0.11.13"
+    },
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "accelerator": "CPU_ONLY_ALGORITHM; Colab tier not discoverable",
+    "cgroup_memory_limit": "max"
+  },
+  "original_statistics": {
+    "original_family": 120,
+    "metrics_per_condition": 10,
+    "conditions": 12,
+    "bootstrap_iterations": 5000,
+    "bootstrap_seed": "2026 + sequential output row index",
+    "interval": "paired percentile bootstrap of mean difference, 95%",
+    "mean_intervals": "Student t, 19 df",
+    "wilcoxon": "scipy.stats.wilcoxon(zero_method=wilcox, alternative=two-sided, method=auto); allclose-to-zero shortcut returns (0,1)",
+    "near_zero_caveat": "Historical allclose shortcut uses numpy default 1e-8; rank effect excludes isclose-zero; win/tie/loss tolerance 1e-12. Retained exactly.",
+    "uncertainty": "Detector seed randomness conditional on common fixed data and validation, not sampling/domain uncertainty",
+    "accepted_sha256": "af6b0953466e2301812c0ff2a93315cd1bdfe79ef585792cf3e792a4da132bf0"
+  },
+  "secondary_statistics": {
+    "study": "120k_v1 secondary descriptive",
+    "confidence": 0.95,
+    "resampling_unit": "20 paired detector seeds300-319, fixed new120k data partitions",
+    "bootstrap_iterations": 5000,
+    "bootstrap_seed": "1202026+metric index",
+    "p_values": "None; original120-test family unchanged",
+    "overlap": "The120k cohort contains all60k original sampled records; repartitioning can move old test rows into secondary training and old train rows into secondary test. This does not alter primary models/results and is not independent replication.",
+    "preprocessing_selection": "New train only; deterministic new validation grid; test never used in selection"
+  },
+  "blocked": [
+    {
+      "job": "nsl_kdd_attack_family",
+      "status": "BLOCKED",
+      "error": "Strict named-label alignment failed:306service entries differ in candidate mirrors; binary-only retained"
+    },
+    {
+      "job": "scenario_holdout",
+      "status": "BLOCKED",
+      "error": "Optional extension lacks comparable prespecified class/scenario contract"
+    }
+  ]
+}

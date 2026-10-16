@@ -39,7 +39,7 @@ from .research_execution import (
     file_sha256,
     load_jsonl_frame,
 )
-from .utils import ensure_dir, stable_mapping_signature, stable_partition_signature
+from .utils import current_process, ensure_dir, stable_mapping_signature, stable_partition_signature
 
 
 BASELINE_PROTOCOL_VERSION = "1.0"
@@ -71,7 +71,7 @@ class _PeakMemoryMonitor:
 
     def __init__(self, interval: float = 0.02) -> None:
         self.interval = interval
-        self.process = psutil.Process()
+        self.process = current_process()
         self.start_rss = 0
         self.peak_rss = 0
         self._stop = threading.Event()

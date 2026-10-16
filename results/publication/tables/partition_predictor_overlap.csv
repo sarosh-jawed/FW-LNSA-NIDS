@@ -1,0 +1,7 @@
+partition_a,partition_b,shared_predictor_hashes,hash_algorithm,dataset_key
+train,validation,5,pandas uint64; collision limitation; diagnostic only,nsl_kdd
+train,test,542,pandas uint64; collision limitation; diagnostic only,nsl_kdd
+validation,test,114,pandas uint64; collision limitation; diagnostic only,nsl_kdd
+train,validation,0,pandas uint64; collision limitation; diagnostic only,cicids2017
+train,test,0,pandas uint64; collision limitation; diagnostic only,cicids2017
+validation,test,0,pandas uint64; collision limitation; diagnostic only,cicids2017

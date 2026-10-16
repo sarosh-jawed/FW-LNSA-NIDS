@@ -1,0 +1,633 @@
+file,input_column,normalized_column,retained_as_predictor,reason,destination_port_retained
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Friday-WorkingHours-Morning.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Monday-WorkingHours.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Monday-WorkingHours.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Monday-WorkingHours.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Tuesday-WorkingHours.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Tuesday-WorkingHours.pcap_ISCX.csv, Label,Label,False,Label excluded,False
+Wednesday-workingHours.pcap_ISCX.csv, Destination Port,Destination Port,True,numeric predictor,True
+Wednesday-workingHours.pcap_ISCX.csv, Flow Duration,Flow Duration,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Total Fwd Packets,Total Fwd Packets,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Total Backward Packets,Total Backward Packets,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Total Length of Fwd Packets,Total Length of Fwd Packets,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Total Length of Bwd Packets,Total Length of Bwd Packets,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Packet Length Max,Fwd Packet Length Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Packet Length Min,Fwd Packet Length Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Packet Length Mean,Fwd Packet Length Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Packet Length Std,Fwd Packet Length Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Bwd Packet Length Max,Bwd Packet Length Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Packet Length Min,Bwd Packet Length Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Packet Length Mean,Bwd Packet Length Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Packet Length Std,Bwd Packet Length Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Flow Bytes/s,Flow Bytes/s,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Flow Packets/s,Flow Packets/s,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Flow IAT Mean,Flow IAT Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Flow IAT Std,Flow IAT Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Flow IAT Max,Flow IAT Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Flow IAT Min,Flow IAT Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Fwd IAT Total,Fwd IAT Total,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd IAT Mean,Fwd IAT Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd IAT Std,Fwd IAT Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd IAT Max,Fwd IAT Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd IAT Min,Fwd IAT Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Bwd IAT Total,Bwd IAT Total,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd IAT Mean,Bwd IAT Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd IAT Std,Bwd IAT Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd IAT Max,Bwd IAT Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd IAT Min,Bwd IAT Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Fwd PSH Flags,Fwd PSH Flags,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd PSH Flags,Bwd PSH Flags,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd URG Flags,Fwd URG Flags,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd URG Flags,Bwd URG Flags,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Header Length,Fwd Header Length,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Header Length,Bwd Header Length,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Fwd Packets/s,Fwd Packets/s,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Packets/s,Bwd Packets/s,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Min Packet Length,Min Packet Length,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Max Packet Length,Max Packet Length,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Packet Length Mean,Packet Length Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Packet Length Std,Packet Length Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Packet Length Variance,Packet Length Variance,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,FIN Flag Count,FIN Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, SYN Flag Count,SYN Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, RST Flag Count,RST Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, PSH Flag Count,PSH Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, ACK Flag Count,ACK Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, URG Flag Count,URG Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, CWE Flag Count,CWE Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, ECE Flag Count,ECE Flag Count,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Down/Up Ratio,Down/Up Ratio,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Average Packet Size,Average Packet Size,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Avg Fwd Segment Size,Avg Fwd Segment Size,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Avg Bwd Segment Size,Avg Bwd Segment Size,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Header Length.1,Fwd Header Length.1,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Fwd Avg Bytes/Bulk,Fwd Avg Bytes/Bulk,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Avg Packets/Bulk,Fwd Avg Packets/Bulk,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Fwd Avg Bulk Rate,Fwd Avg Bulk Rate,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Avg Bytes/Bulk,Bwd Avg Bytes/Bulk,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Bwd Avg Packets/Bulk,Bwd Avg Packets/Bulk,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Bwd Avg Bulk Rate,Bwd Avg Bulk Rate,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Subflow Fwd Packets,Subflow Fwd Packets,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Subflow Fwd Bytes,Subflow Fwd Bytes,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Subflow Bwd Packets,Subflow Bwd Packets,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Subflow Bwd Bytes,Subflow Bwd Bytes,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Init_Win_bytes_forward,Init_Win_bytes_forward,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Init_Win_bytes_backward,Init_Win_bytes_backward,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, act_data_pkt_fwd,act_data_pkt_fwd,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, min_seg_size_forward,min_seg_size_forward,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Active Mean,Active Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Active Std,Active Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Active Max,Active Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Active Min,Active Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv,Idle Mean,Idle Mean,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Idle Std,Idle Std,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Idle Max,Idle Max,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Idle Min,Idle Min,True,numeric predictor,False
+Wednesday-workingHours.pcap_ISCX.csv, Label,Label,False,Label excluded,False

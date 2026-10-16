@@ -1,0 +1,12 @@
+{
+  "pytest": "94 passed in 8.26s",
+  "full_lint": "PASS src scripts tests; intentional direct-entry import-path E402 exceptions only",
+  "compileall": "PASS",
+  "pip_check": "PASS",
+  "notebook_code_cells_synthetic_execution": 6,
+  "notebook_sha256": "284e16b676cdb0a29fdd73315604d1d10dcc1b888c6979caa86314b84bdbd8f1",
+  "notebook_file_uploaded_to_colab_hash": "NOT_CAPTURED_BY_EXPORT",
+  "native_windows_execution": "NOT_TESTED; portable review commands provided; Unix RSS empirical workflow stays Linux/Colab",
+  "latex_table_fragments_compiled": 14,
+  "scientific_studies_repeated": false
+}
