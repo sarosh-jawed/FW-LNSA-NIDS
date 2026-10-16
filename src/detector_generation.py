@@ -13,7 +13,6 @@ from .matching import (
     jaccard_similarity_matrix,
     weighted_hamming_distance_matrix,
     weighted_binary_similarity_matrix,
-    weighted_smc_similarity_matrix,
 )
 
 MatchingMethod = Literal[

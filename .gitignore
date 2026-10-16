@@ -46,3 +46,15 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Private revision checkpoints, raw-row signatures and fitted model state.
+results_final_revision/
+final_validation_export*.zip
+
+# Keep release inputs, execution archives and local environments private.
+.venv-final-validation/
+private_execution/
+release_tmp/
+*.zip
+*_row_signatures.csv
+sample_row_provenance.csv

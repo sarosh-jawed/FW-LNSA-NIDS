@@ -1,0 +1,41 @@
+partition,original_label,category,records
+train,BENIGN,Normal,55678
+train,Bot,Bot,53
+train,DDoS,DoS/DDoS,3495
+train,DoS GoldenEye,DoS/DDoS,282
+train,DoS Hulk,DoS/DDoS,4633
+train,DoS Slowhttptest,DoS/DDoS,155
+train,DoS slowloris,DoS/DDoS,149
+train,FTP-Patator,Brute Force,164
+train,Heartbleed,Heartbleed,1
+train,Infiltration,Infiltration,1
+train,PortScan,PortScan,2447
+train,SSH-Patator,Brute Force,88
+train,Web Attack - Brute Force,Brute Force,37
+train,Web Attack - XSS,Web Attack,17
+validation,BENIGN,Normal,13920
+validation,Bot,Bot,13
+validation,DDoS,DoS/DDoS,874
+validation,DoS GoldenEye,DoS/DDoS,71
+validation,DoS Hulk,DoS/DDoS,1158
+validation,DoS Slowhttptest,DoS/DDoS,39
+validation,DoS slowloris,DoS/DDoS,37
+validation,FTP-Patator,Brute Force,41
+validation,PortScan,PortScan,612
+validation,SSH-Patator,Brute Force,22
+validation,Web Attack - Brute Force,Brute Force,9
+validation,Web Attack - XSS,Web Attack,4
+test,BENIGN,Normal,29828
+test,Bot,Bot,28
+test,DDoS,DoS/DDoS,1872
+test,DoS GoldenEye,DoS/DDoS,151
+test,DoS Hulk,DoS/DDoS,2482
+test,DoS Slowhttptest,DoS/DDoS,83
+test,DoS slowloris,DoS/DDoS,80
+test,FTP-Patator,Brute Force,88
+test,Infiltration,Infiltration,1
+test,PortScan,PortScan,1311
+test,SSH-Patator,Brute Force,47
+test,Web Attack - Brute Force,Brute Force,19
+test,Web Attack - Sql Injection,Web Attack,1
+test,Web Attack - XSS,Web Attack,9

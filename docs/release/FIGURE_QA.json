@@ -1,0 +1,454 @@
+{
+  "final_figures": 10,
+  "archived_figures_reviewed": 20,
+  "review_comments_relevant_to_artwork": [
+    "46",
+    "50",
+    "52",
+    "53",
+    "54",
+    "55",
+    "56",
+    "58",
+    "63",
+    "64",
+    "65",
+    "66",
+    "69",
+    "70",
+    "71",
+    "72",
+    "74",
+    "76",
+    "77"
+  ],
+  "artifact_checks": [
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F01_implemented_workflow.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        3600
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "c0df251546ec81dbf12ad924f47d3c749f4aeadfdb7709ece834cc2e813a0551"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F02_primary_paired_f1.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        2130
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "023c796b81006051fe78efaf8e35368c0a97f560469e4ddb7f88cfa8381d30dc"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F03_primary_utility_and_false_alarms.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        3360
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "971b94f7239f12e6359657a3e4decbc8ffb64077bec5aa56147db82d7a881a19"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F04_validation_to_test_fpr.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        1980
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "e963a1bee1cec53c957dd1ccc2df017cc52ba019de14cf4642386ec48a322e0b"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F05_representation_and_stability.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        3180
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "f7d35787f6fe148c42e5c06c6f202f1f281b7a691be22b091dcdd19c778f242b"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F06_training_only_sensitivities.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        3060
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "4441eeb764da5a00dc2a21a1039fe81ec57fdb69e0ac05d4b6682bc6f1734658"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F07_cicids_representation_diagnostics.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        2040
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "9bde387ea2c715a01cd6cf28de95825a7ac6388d8c91ec9b66046dd514b236f3"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F08_cicids_category_recall.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        2220
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "898273de72f1153d78abea6768c00006a14fa8b825ff3336d2cf84f93296799b"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F09_controlled_efficiency.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        2580
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "2a625b7cb88816dc55f609b3e507bc69d239a995a70461aa4cbb782146e42e36"
+    },
+    {
+      "group": "final",
+      "path": "repo/results/publication/figures/F10_secondary_120k.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        599.9988,
+        599.9988
+      ],
+      "png_dimensions": [
+        4320,
+        2040
+      ],
+      "visual_review": "PASS: rendered PDF inspected; grayscale and vector structure verified; PNG fully decoded at600dpi",
+      "sha256": "e91f753f185c128f1abd99a9c35247bac269938b456cc969c1167830ea3a5947"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/cicids2017_binary_patterns.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        1770,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "bf0be7402fc6f25b0882676d72cc586250d1ca288df566912d4eba8295672f98"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/cicids2017_category_support_recall.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2370,
+        1165
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "3fba3b1d13f87061febbc3e4d4da0d39389f3ae1558922579b187be5ae37c7be"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/cicids2017_feature_stability.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2368,
+        1765
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "a7ec1a063ff5809b0e6562e2d7cc429dbc6adcbe691a5ee4b5d49222fcf23ad9"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/controlled_storage_throughput.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2352,
+        1316
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "ff64260c5ccb4733342a723c9ebe1769547006db529d15903c6c8a7acb5502b5"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/historical_storage_throughput_context.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2066,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "88ad999a1a3aa88524f3849086b2f0c7fa42fea5dc92bcddf5cc7d0b2374e9a1"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/nsl_kdd_binary_patterns.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        1770,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "36695c65edc8930688cb47e8b0a510ac9ecdb771c03a5ea2c3f82e018504efb5"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/nsl_kdd_category_support_recall.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2370,
+        1165
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "f3a1c5fd7acfb3424e07ccd293ae290dc1eb6558df8cec59d3c46dcc9e4c2061"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/nsl_kdd_feature_stability.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2368,
+        1765
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "12f11695465c5210a3428ef254731156c64fc6849108412d0c7e581d0c18a0d7"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/original_test_f1_vs_realized_fpr.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2964,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "3bb7d59516cabf78d969efca9e0e79f6e75487f4a2441e4bc30adcb4497c89fb"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/original_test_recall_vs_realized_fpr.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2965,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "7ef1b87dcca8ee75674629489620942e819ad7a6e4208cf38dc00d24d14f2636"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/original_validation_vs_test_fpr.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2970,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "ddbefee09a4531804cbf73d0523d54bdf6ec822e3ca60b346a8eba9e04270cbe"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/report/figures/paired_f1_original_120_family.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        2970,
+        1316
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "58a80bdce1ef55249b3d6327e83727746b69286616aafdd54880c26bc86e0397"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/secondary_report/cicids2017_feature_count.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        1770,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "030a1e7562e8c129bf8ea22f5caa9bae46f0d2a0e7a8fa1a0cdfe1a2b73b25bb"
+    },
+    {
+      "group": "archived_colab",
+      "path": "colab_evidence/secondary_report/nsl_kdd_feature_count.pdf",
+      "pdf_pages": 1,
+      "png_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "png_dimensions": [
+        1770,
+        1166
+      ],
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "4972ccd69c167c493530a4c461b6c254b2022c9d36bab167c6f035a718cae786"
+    },
+    {
+      "group": "accepted_original",
+      "path": "accepted/evidence/figures/cicids2017_category_recall.png",
+      "png_dimensions": [
+        2970,
+        1765
+      ],
+      "replacement": "Redrawn final vector artwork; historical original preserved",
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "2056c4e1ed2c08e6fff7bf303afe1334f1f0ea595fb09bf06a282f150fbddc9a"
+    },
+    {
+      "group": "accepted_original",
+      "path": "accepted/evidence/figures/f1_vs_observed_fpr.png",
+      "png_dimensions": [
+        2366,
+        1466
+      ],
+      "replacement": "Redrawn final vector artwork; historical original preserved",
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "80f302288a51aca1e9ded34edbe03bdc7a1928952917eaeff6807b5bc8e42741"
+    },
+    {
+      "group": "accepted_original",
+      "path": "accepted/evidence/figures/model_size_vs_throughput.png",
+      "png_dimensions": [
+        2366,
+        1452
+      ],
+      "replacement": "Redrawn final vector artwork; historical original preserved",
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "cd683601e1289591ea5b31f1edfc90c44423dcfa9c722102c03c93f79db9968a"
+    },
+    {
+      "group": "accepted_original",
+      "path": "accepted/evidence/figures/paired_weighted_vs_hamming_f1.png",
+      "png_dimensions": [
+        2672,
+        1466
+      ],
+      "replacement": "Redrawn final vector artwork; historical original preserved",
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "d39a3df4157ced39035886f76a7bf2092aa416df42a97a7a9ac660fdfb71ff9b"
+    },
+    {
+      "group": "accepted_original",
+      "path": "accepted/evidence/figures/recall_vs_observed_fpr.png",
+      "png_dimensions": [
+        2366,
+        1466
+      ],
+      "replacement": "Redrawn final vector artwork; historical original preserved",
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "beb54bdeb85b515eba09c938bdfec48a1471c701c8fad552aaf3677a9c688ae7"
+    },
+    {
+      "group": "accepted_original",
+      "path": "accepted/evidence/figures/validation_vs_test_fpr.png",
+      "png_dimensions": [
+        2070,
+        1765
+      ],
+      "replacement": "Redrawn final vector artwork; historical original preserved",
+      "visual_review": "PASS audit: retained privately, replaced or intentionally omitted from publication set",
+      "sha256": "5fb0d57045e5e1c0a55a5a3d8202078e41750c7ee795f266ee6720358c7d9f0b"
+    }
+  ],
+  "note": "F03 uses one shared external legend; all other final artwork retains previously inspected geometry. No statistical values were changed."
+}

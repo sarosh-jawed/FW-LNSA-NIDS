@@ -1,0 +1,3 @@
+method,fs_size,target_fpr,detector_budget,self_threshold_config,self_threshold_scale,self_threshold,configuration_id
+hamming,20,0.050000000000000003,5000,0.14999999999999999,ratio,3,0a7f244134b23357
+weighted_similarity,20,0.050000000000000003,5000,0.75,direct,0.75,5da8171bd38f5303

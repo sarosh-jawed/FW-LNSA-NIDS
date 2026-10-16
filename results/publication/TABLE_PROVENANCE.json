@@ -1,0 +1,1101 @@
+{
+  "tables/original_fw_seed_metrics.csv": {
+    "sources": [
+      {
+        "archive": "accepted",
+        "path": "evidence/seed_level_csv/fw_lnsa_seed_results.csv",
+        "sha256": "f8fa2b59b89447978ee447c75ffb21e52719223ca1040a94999bd2ede9d1df57"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 480,
+    "columns": [
+      "dataset_key",
+      "fs_size",
+      "configuration_id",
+      "method",
+      "seed",
+      "detector_budget",
+      "retained_detectors",
+      "retention_rate",
+      "self_threshold",
+      "detection_threshold",
+      "target_fpr",
+      "validation_accuracy",
+      "validation_precision",
+      "validation_recall",
+      "validation_f1",
+      "validation_fpr",
+      "validation_specificity",
+      "validation_balanced_accuracy",
+      "validation_mcc",
+      "validation_pr_auc",
+      "validation_roc_auc",
+      "validation_tn",
+      "validation_fp",
+      "validation_fn",
+      "validation_tp",
+      "test_accuracy",
+      "test_precision",
+      "test_recall",
+      "test_f1",
+      "test_fpr",
+      "test_specificity",
+      "test_balanced_accuracy",
+      "test_mcc",
+      "test_pr_auc",
+      "test_roc_auc",
+      "test_tn",
+      "test_fp",
+      "test_fn",
+      "test_tp"
+    ]
+  },
+  "tables/original_reference_seed_metrics.csv": {
+    "sources": [
+      {
+        "archive": "accepted",
+        "path": "evidence/seed_level_csv/baseline_seed_results.csv",
+        "sha256": "9bce12401ec0e2741f319acb25f5164ef157a317b1018b92050c33aa2d5e660b"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 960,
+    "columns": [
+      "dataset_key",
+      "model",
+      "fs_size",
+      "seed",
+      "target_fpr",
+      "detection_threshold",
+      "validation_accuracy",
+      "validation_precision",
+      "validation_recall",
+      "validation_f1",
+      "validation_fpr",
+      "validation_specificity",
+      "validation_balanced_accuracy",
+      "validation_mcc",
+      "validation_pr_auc",
+      "validation_roc_auc",
+      "validation_tn",
+      "validation_fp",
+      "validation_fn",
+      "validation_tp",
+      "test_accuracy",
+      "test_precision",
+      "test_recall",
+      "test_f1",
+      "test_fpr",
+      "test_specificity",
+      "test_balanced_accuracy",
+      "test_mcc",
+      "test_pr_auc",
+      "test_roc_auc",
+      "test_tn",
+      "test_fp",
+      "test_fn",
+      "test_tp"
+    ]
+  },
+  "tables/original_predictive_metrics.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "evidence/all_predictive_metrics.csv",
+        "sha256": "fb3e744b3e156b72f16eb391441d43b8f92535f854bc18687581766a8874146c"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 720,
+    "columns": [
+      "dataset_key",
+      "model",
+      "fs_size",
+      "target_fpr",
+      "approach",
+      "metric",
+      "count",
+      "mean",
+      "std",
+      "ci_low",
+      "ci_high"
+    ]
+  },
+  "tables/original_paired_tests_120.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "evidence/paired_120_regenerated.csv",
+        "sha256": "f7a28d75e62bee10cdda956634748c76cacba2a3565e7da43abe759099494229"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 120,
+    "columns": [
+      "dataset_key",
+      "dataset",
+      "fs_size",
+      "feature_set",
+      "target_fpr",
+      "metric",
+      "pairs",
+      "hamming_mean",
+      "weighted_mean",
+      "mean_difference_weighted_minus_hamming",
+      "median_difference_weighted_minus_hamming",
+      "bootstrap_ci_low",
+      "bootstrap_ci_high",
+      "wilcoxon_statistic",
+      "p_value",
+      "rank_biserial_effect",
+      "weighted_wins",
+      "ties",
+      "weighted_losses",
+      "preferred_direction",
+      "holm_adjusted_p",
+      "significant_after_holm"
+    ]
+  },
+  "tables/calibration.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "evidence/calibration_traceability.csv",
+        "sha256": "cdc983aeb4dd2b2f59afde0d717e69be9987548c77d31add6f2486a7abe1d8e3"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 72,
+    "columns": [
+      "dataset_key",
+      "model",
+      "fs_size",
+      "target_fpr",
+      "approach",
+      "seeds",
+      "validation_target_met_count",
+      "validation_target_met_denominator",
+      "validation_seed_compliance_ci_low",
+      "validation_seed_compliance_ci_high",
+      "validation_fpr_count",
+      "validation_fpr_mean",
+      "validation_fpr_std",
+      "validation_fpr_ci_low",
+      "validation_fpr_ci_high",
+      "validation_absolute_target_error_count",
+      "validation_absolute_target_error_mean",
+      "validation_absolute_target_error_std",
+      "validation_absolute_target_error_ci_low",
+      "validation_absolute_target_error_ci_high",
+      "test_target_met_count",
+      "test_target_met_denominator",
+      "test_seed_compliance_ci_low",
+      "test_seed_compliance_ci_high",
+      "test_fpr_count",
+      "test_fpr_mean",
+      "test_fpr_std",
+      "test_fpr_ci_low",
+      "test_fpr_ci_high",
+      "test_absolute_target_error_count",
+      "test_absolute_target_error_mean",
+      "test_absolute_target_error_std",
+      "test_absolute_target_error_ci_low",
+      "test_absolute_target_error_ci_high",
+      "detection_threshold_median",
+      "detection_threshold_min",
+      "detection_threshold_max",
+      "retained_detectors_median",
+      "retained_detectors_min",
+      "retained_detectors_max",
+      "retention_rate_median",
+      "retention_rate_min",
+      "retention_rate_max"
+    ]
+  },
+  "tables/category_recall.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_replay/category_summary.csv",
+        "sha256": "eb3a36cf8578bec0d3300377015ae12e567c56c5d6532614b64aa68851f204a3"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 84,
+    "columns": [
+      "dataset_key",
+      "fs_size",
+      "method",
+      "target_fpr",
+      "category",
+      "support",
+      "status",
+      "count",
+      "mean",
+      "std",
+      "ci_low",
+      "ci_high"
+    ]
+  },
+  "tables/cicids_category_map.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/category_map.csv",
+        "sha256": "91ac9091f39e8b40520e8450f3d0d97b274659bf01b30f94caf4af6973a7320b"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 15,
+    "columns": [
+      "original_label",
+      "category",
+      "train_support",
+      "validation_support",
+      "test_support"
+    ]
+  },
+  "tables/controlled_benchmark.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "benchmark/benchmark_summary.csv",
+        "sha256": "c003646847c2f2ffe1c05f782df91f4154ee81a30b6cab34dc082246e3452089"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 8,
+    "columns": [
+      "dataset_key",
+      "fs_size",
+      "method",
+      "target_fpr",
+      "repeats",
+      "elapsed_sec_median",
+      "elapsed_sec_q1",
+      "elapsed_sec_q3",
+      "elapsed_sec_min",
+      "elapsed_sec_max",
+      "throughput_records_per_sec_median",
+      "throughput_records_per_sec_q1",
+      "throughput_records_per_sec_q3",
+      "throughput_records_per_sec_min",
+      "throughput_records_per_sec_max",
+      "peak_rss_mb_median",
+      "peak_rss_mb_q1",
+      "peak_rss_mb_q3",
+      "peak_rss_mb_min",
+      "peak_rss_mb_max",
+      "prediction_rss_delta_mb_median",
+      "prediction_rss_delta_mb_q1",
+      "prediction_rss_delta_mb_q3",
+      "prediction_rss_delta_mb_min",
+      "prediction_rss_delta_mb_max",
+      "process_high_water_rss_mb_median",
+      "process_high_water_rss_mb_q1",
+      "process_high_water_rss_mb_q3",
+      "process_high_water_rss_mb_min",
+      "process_high_water_rss_mb_max",
+      "detector_state_pickle_bytes_median",
+      "detector_state_pickle_bytes_q1",
+      "detector_state_pickle_bytes_q3",
+      "detector_state_pickle_bytes_min",
+      "detector_state_pickle_bytes_max",
+      "deployed_pipeline_pickle_bytes_median",
+      "deployed_pipeline_pickle_bytes_q1",
+      "deployed_pipeline_pickle_bytes_q3",
+      "deployed_pipeline_pickle_bytes_min",
+      "deployed_pipeline_pickle_bytes_max"
+    ]
+  },
+  "tables/benchmark_repeats.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "benchmark/benchmark_repeats.csv",
+        "sha256": "7d8f6c93e6370e37dd366345b46e154454c8a469188fbbedbd5996068590fe91"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 80,
+    "columns": [
+      "dataset_key",
+      "configuration_id",
+      "fs_size",
+      "method",
+      "target_fpr",
+      "seed",
+      "elapsed_sec",
+      "records",
+      "throughput_records_per_sec",
+      "peak_rss_mb",
+      "baseline_rss_mb",
+      "prediction_rss_delta_mb",
+      "process_high_water_rss_mb",
+      "rss_floor_flag",
+      "rss_floor_interpretation",
+      "detector_state_pickle_bytes",
+      "deployed_pipeline_pickle_bytes",
+      "prediction_sha256",
+      "scope",
+      "repeat"
+    ]
+  },
+  "tables/sample120k_metrics.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "secondary_report/sample120k_metric_summary.csv",
+        "sha256": "c11fa3986f814d2a52f4ef9a6d50dfe201c55683662d1b42ef8379a1675f8a07"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 12,
+    "columns": [
+      "study",
+      "method",
+      "target_fpr",
+      "metric",
+      "count",
+      "mean",
+      "std",
+      "ci_low",
+      "ci_high"
+    ]
+  },
+  "tables/sample120k_paired.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "secondary_report/sample120k_paired_descriptive.csv",
+        "sha256": "3a5380fe5694dbd16e51be298d732f0927a816cf8fe200157bcf271c6f2eb215"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 3,
+    "columns": [
+      "study",
+      "metric",
+      "pairs",
+      "weighted_minus_hamming_mean",
+      "paired_percentile_95ci_low",
+      "paired_percentile_95ci_high",
+      "positive_differences",
+      "ties",
+      "negative_differences",
+      "bootstrap_seed",
+      "bootstrap_iterations",
+      "inferential_p_values"
+    ]
+  },
+  "tables/sample120k_overlap.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "secondary_report/sample120k_cross_study_partition_overlap.csv",
+        "sha256": "e8c5ebbb12fd338dd370bad781e34808fd4f0e198031344a68d724db34a665fc"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 9,
+    "columns": [
+      "original_60k_partition",
+      "new_120k_partition",
+      "shared_rows",
+      "original_partition_records",
+      "fraction_of_original_partition",
+      "interpretation"
+    ]
+  },
+  "tables/sample120k_composition.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "sample120k/composition.csv",
+        "sha256": "6483b9a8db0af06f2274929c6943a97d76f0180bcb11f93e66c2e6b8de83a14a"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 40,
+    "columns": [
+      "partition",
+      "original_label",
+      "category",
+      "records"
+    ]
+  },
+  "tables/sample120k_calibration.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "secondary_report/sample120k_calibration.csv",
+        "sha256": "d230880a1a9743195c31c1556c029ec6bd831d9d24a62098a013984f145c9b50"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 2,
+    "columns": [
+      "method",
+      "seeds",
+      "test_target_met_count",
+      "mean_absolute_target_error",
+      "mean_validation_fpr",
+      "mean_test_fpr"
+    ]
+  },
+  "tables/no_port_features.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_development/no_destination_port_features.csv",
+        "sha256": "eb6edf8eff9d62dbdf6979d4aecef44397b613ef584f1074a57739384b44ed5c"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 20,
+    "columns": [
+      "feature",
+      "mi_score",
+      "is_discrete",
+      "normalized_weight"
+    ]
+  },
+  "tables/original_performance.csv": {
+    "sources": [
+      {
+        "archive": "accepted",
+        "path": "evidence/tables_csv/confirmatory_performance.csv",
+        "sha256": "816d9b27505bf2eee50caab36e2326a2a2424787f443128bd92c9b7dba68538e"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 72,
+    "columns": [
+      "dataset_key",
+      "dataset",
+      "procedure",
+      "feature_set",
+      "fs_size",
+      "target_fpr",
+      "approach",
+      "runs",
+      "seeds",
+      "test_accuracy_count",
+      "test_accuracy_mean",
+      "test_accuracy_std",
+      "test_accuracy_ci_low",
+      "test_accuracy_ci_high",
+      "test_precision_count",
+      "test_precision_mean",
+      "test_precision_std",
+      "test_precision_ci_low",
+      "test_precision_ci_high",
+      "test_recall_count",
+      "test_recall_mean",
+      "test_recall_std",
+      "test_recall_ci_low",
+      "test_recall_ci_high",
+      "test_f1_count",
+      "test_f1_mean",
+      "test_f1_std",
+      "test_f1_ci_low",
+      "test_f1_ci_high",
+      "test_fpr_count",
+      "test_fpr_mean",
+      "test_fpr_std",
+      "test_fpr_ci_low",
+      "test_fpr_ci_high",
+      "test_specificity_count",
+      "test_specificity_mean",
+      "test_specificity_std",
+      "test_specificity_ci_low",
+      "test_specificity_ci_high",
+      "test_balanced_accuracy_count",
+      "test_balanced_accuracy_mean",
+      "test_balanced_accuracy_std",
+      "test_balanced_accuracy_ci_low",
+      "test_balanced_accuracy_ci_high",
+      "test_mcc_count",
+      "test_mcc_mean",
+      "test_mcc_std",
+      "test_mcc_ci_low",
+      "test_mcc_ci_high",
+      "test_pr_auc_count",
+      "test_pr_auc_mean",
+      "test_pr_auc_std",
+      "test_pr_auc_ci_low",
+      "test_pr_auc_ci_high",
+      "test_roc_auc_count",
+      "test_roc_auc_mean",
+      "test_roc_auc_std",
+      "test_roc_auc_ci_low",
+      "test_roc_auc_ci_high",
+      "validation_fpr_count",
+      "validation_fpr_mean",
+      "validation_fpr_std",
+      "validation_fpr_ci_low",
+      "validation_fpr_ci_high",
+      "calibration_fpr_count",
+      "calibration_fpr_mean",
+      "calibration_fpr_std",
+      "calibration_fpr_ci_low",
+      "calibration_fpr_ci_high"
+    ]
+  },
+  "tables/sample120k_seed_metrics.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "sample120k/test_seed_results.csv",
+        "sha256": "739c390e10fd357e7074887d94a7385395e09b116e72cd0f399e436f37af367a"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 40,
+    "columns": [
+      "fs_size",
+      "configuration_id",
+      "method",
+      "seed",
+      "detector_budget",
+      "retained_detectors",
+      "retention_rate",
+      "self_threshold",
+      "detection_threshold",
+      "target_fpr",
+      "validation_recall",
+      "validation_f1",
+      "validation_fpr",
+      "validation_tn",
+      "validation_fp",
+      "validation_fn",
+      "validation_tp",
+      "test_recall",
+      "test_f1",
+      "test_fpr",
+      "test_tn",
+      "test_fp",
+      "test_fn",
+      "test_tp"
+    ]
+  },
+  "tables/sample120k_locks.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "sample120k/configuration_lock.json",
+        "sha256": "67e6a40da58e99d02efb679bf2db40be35cdad9f665f264ff4624f2c209b8a6c"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 2,
+    "columns": [
+      "method",
+      "fs_size",
+      "target_fpr",
+      "detector_budget",
+      "self_threshold_config",
+      "self_threshold_scale",
+      "self_threshold",
+      "configuration_id"
+    ]
+  },
+  "tables/partition_predictor_overlap.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/predictor_overlap.csv",
+        "sha256": "2c1762f8705bfd354b037fcbc53ace046b1a842182dffe5b087a756da5cea70e"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/predictor_overlap.csv",
+        "sha256": "65ad0d24f7007b3e6f0a6bf324ac1b8815578acf35c14aef96b0bfba90e72acb"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 6,
+    "columns": [
+      "partition_a",
+      "partition_b",
+      "shared_predictor_hashes",
+      "hash_algorithm",
+      "dataset_key"
+    ]
+  },
+  "tables/partition_pattern_overlap.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs10_pattern_overlap.csv",
+        "sha256": "abcf274f16c150cc110ee2b776453ae5b1479f730011eaf42c27cd658136ec61"
+      },
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs20_pattern_overlap.csv",
+        "sha256": "44b6d90b9752a99b709a3f5a5d15f674a06c4af8d8d6a45e8eaaaf580f6f0dbc"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs10_pattern_overlap.csv",
+        "sha256": "f7f503d68011a848158045a601a219c65b186c7f39c38e37c75a3d3d6f96d74c"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs20_pattern_overlap.csv",
+        "sha256": "7c16991677fdcb475b06e41269d0717cf4cc07a611e862108e361ffa1f3845a8"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 12,
+    "columns": [
+      "partition_a",
+      "partition_b",
+      "shared_patterns",
+      "dataset_key",
+      "fs_size"
+    ]
+  },
+  "tables/dataset_composition.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/composition.csv",
+        "sha256": "e124ce87bd5dab9792db24b03af415dfc50a2fa162ff92ecdbc85f7c71e97a05"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/composition.csv",
+        "sha256": "03b28ccafd884a24f6ad8592f362eeb2ef287b9d2ac4becaf0ed3f1107ffd6ed"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 146,
+    "columns": [
+      "partition",
+      "grouping",
+      "binary_label",
+      "records",
+      "original_label",
+      "category",
+      "source_file",
+      "dataset_key"
+    ]
+  },
+  "tables/binary_patterns.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs10_patterns.csv",
+        "sha256": "767559b6695f101cd16e887309714456eea71f6dac7be38f2d721930dbeb4441"
+      },
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs20_patterns.csv",
+        "sha256": "0090335468cf858fa71c6cd41db44f36ca2b811db529c0f61913840aa3ee062a"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs10_patterns.csv",
+        "sha256": "1822833df018c4e25ef06ae8146763426b3b2e9fface0c54593ad76bea46fb3d"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs20_patterns.csv",
+        "sha256": "ae1a967b997b99783d67e5d70518e54abc7a10a0907071e60b7cbfd2c81c28b7"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 12,
+    "columns": [
+      "partition",
+      "records",
+      "unique_patterns",
+      "largest_pattern_count",
+      "unique_fraction",
+      "constant_bits",
+      "rare_bits_at_1pct",
+      "benign_attack_shared_patterns",
+      "records_unseen_in_train",
+      "descriptive_only",
+      "dataset_key",
+      "fs_size"
+    ]
+  },
+  "tables/binary_bits.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs10_bits.csv",
+        "sha256": "c11baaa1bb2e70b37e6cb30d9ef38f987bd5c7bf0bf8c1facb5a61c25588e25a"
+      },
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs20_bits.csv",
+        "sha256": "f64cac879d1574f6ade0be99429aee39d2250d32fd2b88f1812e2c8469850ea1"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs10_bits.csv",
+        "sha256": "ab84e32ffd04a150ec9b90470fa009a4710b4ce61f69b6dac11bc344e748cea9"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs20_bits.csv",
+        "sha256": "bc6a281386da29de51a81ce96a5159ff6cd957e29eab08f38c1e0aec8b19ee65"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 180,
+    "columns": [
+      "partition",
+      "feature",
+      "prevalence",
+      "class_0_support",
+      "class_0_prevalence",
+      "class_1_support",
+      "class_1_prevalence",
+      "dataset_key",
+      "fs_size"
+    ]
+  },
+  "tables/features_weights.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs10_features_weights.csv",
+        "sha256": "183eb24383ee8b84e5bab285ff7c2b706477ab28770537f5aaaa30332216c146"
+      },
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_data/fs20_features_weights.csv",
+        "sha256": "732ad40e1b929c00dc14efc2cee37911cacf73527f179ad1c572e29e7b0d4846"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs10_features_weights.csv",
+        "sha256": "8172b3bffccfdcc605dede04b4811c5aaa696891c1802c48bb69fa8d2192f874"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/fs20_features_weights.csv",
+        "sha256": "de1641809e4321b24e257116ca2f7f6fdf97732e27e96e68616a03db80dea997"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 60,
+    "columns": [
+      "feature",
+      "mi_score",
+      "is_discrete",
+      "normalized_weight",
+      "dataset_key",
+      "fs_size",
+      "rank"
+    ]
+  },
+  "tables/feature_stability.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_stability/selection_frequency.csv",
+        "sha256": "ac2e024d0da343f48503b2904f4eeb25391390922c4b55cc892b816df0d87ef8"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_stability/selection_frequency.csv",
+        "sha256": "5b61b8cf9b2a5837e6573130b00f42f7b8553e94dff5d4a19f4df1957f983039"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 400,
+    "columns": [
+      "k",
+      "feature",
+      "selected_count",
+      "resamples",
+      "selection_frequency",
+      "mi_mean",
+      "mi_std",
+      "mi_min",
+      "mi_max",
+      "dataset_key"
+    ]
+  },
+  "tables/development_summary.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_development/validation_sensitivity_summary.csv",
+        "sha256": "6f07263ab9bd3f927fd271c75e5bc2dbc9e5b0b3f33b846f21052397baaeaed1"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_development/validation_sensitivity_summary.csv",
+        "sha256": "73eaf57dfb03f62231cf0da499b5ed6c1a2b5d0f33fda7ddc59d2c2e0fcd7a54"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 38,
+    "columns": [
+      "experiment",
+      "dataset_key",
+      "method",
+      "k",
+      "self_cap",
+      "validation_f1_mean",
+      "validation_f1_std",
+      "validation_f1_min",
+      "validation_f1_max",
+      "validation_recall_mean",
+      "validation_recall_std",
+      "validation_recall_min",
+      "validation_recall_max",
+      "validation_fpr_mean",
+      "validation_fpr_std",
+      "validation_fpr_min",
+      "validation_fpr_max",
+      "retention_rate_mean",
+      "retention_rate_std",
+      "retention_rate_min",
+      "retention_rate_max",
+      "retained_detectors_mean",
+      "retained_detectors_std",
+      "retained_detectors_min",
+      "retained_detectors_max",
+      "validation_records_per_sec_mean",
+      "validation_records_per_sec_std",
+      "validation_records_per_sec_min",
+      "validation_records_per_sec_max"
+    ]
+  },
+  "tables/development_seed_metrics.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_development/validation_sensitivity.csv",
+        "sha256": "1f305851d0a76e7baa1ca441a8cc1c1ac5eeddd3071a6d9253221507eacb8952"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_development/validation_sensitivity.csv",
+        "sha256": "7d1836406b6554e3b9bdc8dda664f1515b92c794bf7bf0c412b8ce04f80c82bc"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 190,
+    "columns": [
+      "experiment",
+      "dataset_key",
+      "method",
+      "seed",
+      "k",
+      "self_cap",
+      "target_fpr",
+      "retained_detectors",
+      "retention_rate",
+      "unique_self_patterns",
+      "detection_threshold",
+      "validation_recall",
+      "validation_f1",
+      "validation_fpr"
+    ]
+  },
+  "tables/mrmr_ranking.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_development/mrmr_ranking.csv",
+        "sha256": "40473ddd3e9703507bfeac0d7562aa87452eefc04e04f0da0217e9f7a032b368"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_development/mrmr_ranking.csv",
+        "sha256": "784794a8ceb4e86172237b8da73f9238cfcf489ef7accbe56059a0a29a9a68d1"
+      }
+    ],
+    "transformation": "Concatenate dataset-tagged aggregate or detector-seed diagnostics; no network-record rows",
+    "rows": 200,
+    "columns": [
+      "feature",
+      "rank",
+      "relevance_nats",
+      "mean_redundancy_nats",
+      "mid_objective",
+      "dataset_key"
+    ]
+  },
+  "tables/stability_pairwise.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_stability/pairwise_stability.csv",
+        "sha256": "39fbc2de854931cf2ede44fb2b0d67e001955550f6681c78de6509a3df9e4974"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_stability/pairwise_stability.csv",
+        "sha256": "ee7d8cad988c7b8f189b033d7767a33ab1da7449aecfb2e3c811109de0bad104"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 1740,
+    "columns": [
+      "seed_a",
+      "seed_b",
+      "k",
+      "jaccard",
+      "spearman_full_ranking",
+      "dataset_key"
+    ]
+  },
+  "tables/stability_summary.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_stability/pairwise_stability.csv",
+        "sha256": "39fbc2de854931cf2ede44fb2b0d67e001955550f6681c78de6509a3df9e4974"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_stability/pairwise_stability.csv",
+        "sha256": "ee7d8cad988c7b8f189b033d7767a33ab1da7449aecfb2e3c811109de0bad104"
+      }
+    ],
+    "transformation": "Descriptive means and sample SD of dependent pairwise statistics; not independent inferential replicates",
+    "rows": 4,
+    "columns": [
+      "dataset_key",
+      "k",
+      "resamples",
+      "dependent_pairwise_comparisons",
+      "mean_jaccard",
+      "std_jaccard",
+      "min_jaccard",
+      "max_jaccard",
+      "mean_full_rank_spearman"
+    ]
+  },
+  "tables/replay_diagnostics.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "nsl_kdd_replay/replay_checks.csv",
+        "sha256": "4a436f7aff7b8ffe1a4015f9144d7ca875269bdf233374bd73a7a87fcbea3013"
+      },
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_replay/replay_checks.csv",
+        "sha256": "cb15cadd370f805beef3804c0b4fb9e790077fb1c91afeb725ef6b2265d5be4b"
+      }
+    ],
+    "transformation": "Use calibrated final threshold field; omit stale pre-calibration detection_threshold metadata and uncomputed diagnostic AUC columns",
+    "rows": 480,
+    "columns": [
+      "dataset_key",
+      "configuration_id",
+      "fs_size",
+      "method",
+      "target_fpr",
+      "seed",
+      "candidate_detectors",
+      "retained_detectors",
+      "retention_rate",
+      "unique_self_patterns",
+      "unique_mature_detectors",
+      "mature_duplicate_count",
+      "self_used_pre_dedup",
+      "calibrated_detection_threshold",
+      "validation_unique_finite_scores",
+      "test_unique_finite_scores",
+      "validation_records_at_threshold",
+      "test_records_at_threshold"
+    ]
+  },
+  "tables/original_configuration_locks.csv": {
+    "sources": [
+      {
+        "archive": "accepted",
+        "path": "reproducibility/nsl_kdd/fw_lnsa_configuration_lock.json",
+        "sha256": "0ff851ae6a6f72d6eddc2b7499c38a420edb6995d9447da6b8fc50e15d1483f3"
+      },
+      {
+        "archive": "accepted",
+        "path": "reproducibility/cicids2017/fw_lnsa_configuration_lock.json",
+        "sha256": "a8aef34851099f5ba7bfdc0cdcb77863577697d6b5ad01e1d114bf92f7186167"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 24,
+    "columns": [
+      "dataset_key",
+      "method",
+      "fs_size",
+      "target_fpr",
+      "detector_budget",
+      "self_threshold_config",
+      "self_threshold_scale",
+      "self_threshold",
+      "configuration_id"
+    ]
+  },
+  "tables/cicids_input_columns.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/cicids_exact_schema.csv",
+        "sha256": "97316363100506f588a7f81bd72c27da12e139f5265d411c33a9a41bd9d02ebc"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 632,
+    "columns": [
+      "file",
+      "input_column",
+      "normalized_column",
+      "retained_as_predictor",
+      "reason",
+      "destination_port_retained"
+    ]
+  },
+  "tables/cicids_cleaning.csv": {
+    "sources": [
+      {
+        "archive": "colab_export",
+        "path": "cicids2017_data/cleaning_report.csv",
+        "sha256": "c2e1c763dc6f14f46b1a004059f08a7226f7acbef9a2d4043ec49faa48223559"
+      }
+    ],
+    "transformation": "Exact selected columns; original numeric precision retained",
+    "rows": 24,
+    "columns": [
+      "record_type",
+      "source_file",
+      "scan_complete",
+      "chunks_read",
+      "rows_read",
+      "rows_missing_label_dropped",
+      "rows_all_features_missing_dropped",
+      "duplicate_rows_removed",
+      "nonfinite_values_replaced",
+      "nonnumeric_values_coerced",
+      "rows_after_cleaning",
+      "rows_retained_in_sample",
+      "train_records",
+      "validation_records",
+      "test_records",
+      "train_missing_values_imputed",
+      "validation_missing_values_imputed",
+      "test_missing_values_imputed",
+      "all_missing_training_columns_removed",
+      "test_stratification_strategy_effective",
+      "validation_stratification_strategy_effective",
+      "test_rare_labels_pooled",
+      "validation_rare_labels_pooled",
+      "original_label",
+      "attack_category",
+      "binary_label"
+    ]
+  }
+}

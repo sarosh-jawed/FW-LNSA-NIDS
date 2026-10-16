@@ -1,0 +1,25 @@
+{
+  "status": "BLOCKED_STRICT_ALIGNMENT_FAILED",
+  "candidate_sha256": "fa46b0935342616aa83b7c2578db355b6a7aaabbc492248172c7a1e8b7ab8f84",
+  "accepted_sha256": "a5c2c0df447353a2d28000d3fd834678b59f6f3bc2a8b4ccf8a1787161eb9f17",
+  "rows": 22544,
+  "binary_labels_equal_in_order": true,
+  "predictive_columns_checked": 41,
+  "mismatching_columns": {
+    "service": 306
+  },
+  "other_40_columns_equal": true,
+  "mirrors": [
+    {
+      "url": "https://github.com/defcom17/NSL_KDD",
+      "commit": "27bbbdf5c5cccf9970b8b6037a0f19dc09c5a0a9",
+      "test_sha256": "fa46b0935342616aa83b7c2578db355b6a7aaabbc492248172c7a1e8b7ab8f84"
+    },
+    {
+      "url": "https://github.com/jmnwong/NSL-KDD-Dataset",
+      "commit": "9d544d0eb9b87d7e2f43ff65733bdb644631d12f",
+      "test_sha256": "fa46b0935342616aa83b7c2578db355b6a7aaabbc492248172c7a1e8b7ab8f84"
+    }
+  ],
+  "action": "Do not transfer named attack labels. Preserve accepted binary results; surface mirror service-value discrepancy to coauthors. No silent remapping."
+}

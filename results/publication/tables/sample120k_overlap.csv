@@ -1,0 +1,10 @@
+original_60k_partition,new_120k_partition,shared_rows,original_partition_records,fraction_of_original_partition,interpretation
+train,test,6853,33600,0.20395833333333332,cross-study repartitioning overlap; not independent replication
+train,train,21391,33600,0.63663690476190471,cross-study repartitioning overlap; not independent replication
+train,validation,5356,33600,0.15940476190476191,cross-study repartitioning overlap; not independent replication
+validation,test,1738,8400,0.2069047619047619,cross-study repartitioning overlap; not independent replication
+validation,train,5321,8400,0.63345238095238099,cross-study repartitioning overlap; not independent replication
+validation,validation,1341,8400,0.15964285714285714,cross-study repartitioning overlap; not independent replication
+test,test,9367,18000,0.5203888888888889,cross-study repartitioning overlap; not independent replication
+test,train,6810,18000,0.37833333333333335,cross-study repartitioning overlap; not independent replication
+test,validation,1823,18000,0.10127777777777777,cross-study repartitioning overlap; not independent replication

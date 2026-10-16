@@ -35,6 +35,19 @@ class PeakMemoryResult:
     peak_delta_mb: float
 
 
+def current_process():
+    """Resolve current RSS process even when a runner virtualizes os.getpid()."""
+    import psutil
+
+    pid = os.getpid()
+    try:
+        # /proc/self refers to the calling process, unlike an emulated PID.
+        pid = int(Path("/proc/self/stat").read_text().split(" ", 1)[0])
+    except (OSError, ValueError):
+        pass
+    return psutil.Process(pid)
+
+
 class PeakRSSMonitor:
     """Sample process RSS in a background thread during a measured operation.
 
@@ -70,9 +83,7 @@ class PeakRSSMonitor:
 
     def __enter__(self) -> "PeakRSSMonitor":
         try:
-            import psutil
-
-            self._process = psutil.Process(os.getpid())
+            self._process = current_process()
             self._baseline = self._sample()
             self._peak = self._baseline
             self._thread = threading.Thread(target=self._run, daemon=True)
@@ -151,9 +162,7 @@ def get_memory_usage_mb() -> float:
     """Return current process memory usage in MB when psutil is available."""
 
     try:
-        import psutil
-
-        return psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)
+        return current_process().memory_info().rss / (1024 ** 2)
     except Exception:
         return float("nan")
 

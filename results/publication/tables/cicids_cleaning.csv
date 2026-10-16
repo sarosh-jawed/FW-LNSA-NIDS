@@ -1,0 +1,25 @@
+record_type,source_file,scan_complete,chunks_read,rows_read,rows_missing_label_dropped,rows_all_features_missing_dropped,duplicate_rows_removed,nonfinite_values_replaced,nonnumeric_values_coerced,rows_after_cleaning,rows_retained_in_sample,train_records,validation_records,test_records,train_missing_values_imputed,validation_missing_values_imputed,test_missing_values_imputed,all_missing_training_columns_removed,test_stratification_strategy_effective,validation_stratification_strategy_effective,test_rare_labels_pooled,validation_rare_labels_pooled,original_label,attack_category,binary_label
+source,Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,True,5,225745,0,0,2633,64,0,223112,5384,,,,,,,,,,,,,,
+source,Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,True,6,286467,0,0,73878,727,0,212589,5121,,,,,,,,,,,,,,
+source,Friday-WorkingHours-Morning.pcap_ISCX.csv,True,4,191033,0,0,10840,216,0,180193,4220,,,,,,,,,,,,,,
+source,Monday-WorkingHours.pcap_ISCX.csv,True,11,529918,0,0,27131,810,0,502787,12008,,,,,,,,,,,,,,
+source,Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,True,6,288602,0,0,42572,396,0,246030,5679,,,,,,,,,,,,,,
+source,Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,True,4,170366,0,0,13677,250,0,156689,3686,,,,,,,,,,,,,,
+source,Tuesday-WorkingHours.pcap_ISCX.csv,True,9,445909,0,0,35712,327,0,410197,9766,,,,,,,,,,,,,,
+source,Wednesday-workingHours.pcap_ISCX.csv,True,14,692703,0,0,101938,1586,0,590765,14136,,,,,,,,,,,,,,
+summary,ALL_SOURCES,True,59,2830743,0,0,308381,4376,0,2522362,60000,33600,8400,18000,54,4,18,0,original_label_with_rare_pooling,original_label_with_rare_pooling,3,2,,,
+label_distribution,ALL_SOURCES,,,,,,,,,,49661,27810,6953,14898,,,,,,,,,BENIGN,Normal,0
+label_distribution,ALL_SOURCES,,,,,,,,,,52,29,7,16,,,,,,,,,Bot,Bot,1
+label_distribution,ALL_SOURCES,,,,,,,,,,3127,1751,438,938,,,,,,,,,DDoS,DoS/DDoS,1
+label_distribution,ALL_SOURCES,,,,,,,,,,258,145,36,77,,,,,,,,,DoS GoldenEye,DoS/DDoS,1
+label_distribution,ALL_SOURCES,,,,,,,,,,4188,2345,586,1257,,,,,,,,,DoS Hulk,DoS/DDoS,1
+label_distribution,ALL_SOURCES,,,,,,,,,,133,74,19,40,,,,,,,,,DoS Slowhttptest,DoS/DDoS,1
+label_distribution,ALL_SOURCES,,,,,,,,,,127,71,18,38,,,,,,,,,DoS slowloris,DoS/DDoS,1
+label_distribution,ALL_SOURCES,,,,,,,,,,153,86,21,46,,,,,,,,,FTP-Patator,Brute Force,1
+label_distribution,ALL_SOURCES,,,,,,,,,,1,1,0,0,,,,,,,,,Heartbleed,Heartbleed,1
+label_distribution,ALL_SOURCES,,,,,,,,,,1,1,0,0,,,,,,,,,Infiltration,Infiltration,1
+label_distribution,ALL_SOURCES,,,,,,,,,,2180,1221,305,654,,,,,,,,,PortScan,PortScan,1
+label_distribution,ALL_SOURCES,,,,,,,,,,74,41,11,22,,,,,,,,,SSH-Patator,Brute Force,1
+label_distribution,ALL_SOURCES,,,,,,,,,,30,17,4,9,,,,,,,,,Web Attack - Brute Force,Brute Force,1
+label_distribution,ALL_SOURCES,,,,,,,,,,1,0,0,1,,,,,,,,,Web Attack - Sql Injection,Web Attack,1
+label_distribution,ALL_SOURCES,,,,,,,,,,14,8,2,4,,,,,,,,,Web Attack - XSS,Web Attack,1

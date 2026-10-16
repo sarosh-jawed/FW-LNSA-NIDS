@@ -179,7 +179,7 @@ class ConfirmatoryProtocolTests(unittest.TestCase):
                 "detection_threshold",
             ]
             pd.testing.assert_frame_equal(first[columns], second[columns])
-            self.assertTrue((first["test_partition_accessed"] == False).all())
+            self.assertFalse(first["test_partition_accessed"].any())
 
     def test_end_to_end_smoke_is_resumable_and_writes_lock(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -192,7 +192,7 @@ class ConfirmatoryProtocolTests(unittest.TestCase):
             self.assertEqual(len(outputs.tuning_results), 2)
             self.assertEqual(len(outputs.locked_configurations), 2)
             self.assertEqual(len(outputs.final_seed_results), 2)
-            self.assertTrue((outputs.final_seed_results["test_metrics_used_for_selection"] == False).all())
+            self.assertFalse(outputs.final_seed_results["test_metrics_used_for_selection"].any())
             lock_path = outputs.output_paths["configuration_lock"]
             self.assertTrue(lock_path.exists())
             with lock_path.open("r", encoding="utf-8") as handle:

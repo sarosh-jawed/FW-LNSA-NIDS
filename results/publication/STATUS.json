@@ -1,0 +1,10 @@
+{
+  "handoff_status": "VERIFIED_FOR_MANUSCRIPT_PREPARATION",
+  "empirical_jobs": 12,
+  "scientific_qa_pass": 88,
+  "expensive_studies_rerun": false,
+  "manuscript_modified": false,
+  "github_pushed": false,
+  "submission_final": false,
+  "colab_export_sha256": "4ddf1e02e621d0d7e0c046d1aadea62f5dd295bbbf1d2f348adc24e60ea722ec"
+}

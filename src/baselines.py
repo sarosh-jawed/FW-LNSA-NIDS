@@ -32,6 +32,7 @@ from .feature_selection import (
 )
 from .preprocessing import PreparedDataset
 from .utils import (
+    current_process,
     ensure_dir,
     save_dataframe,
     stable_feature_selection_signature,
@@ -90,7 +91,7 @@ class _PeakMemoryMonitor:
 
     def __init__(self, interval_seconds: float = 0.01) -> None:
         self.interval_seconds = interval_seconds
-        self._process = psutil.Process()
+        self._process = current_process()
         self._stop_event = threading.Event()
         self._thread: threading.Thread | None = None
         self.start_rss = 0

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator, Mapping, Sequence
+from typing import Iterable, Iterator, Sequence
 import zipfile
 
 import numpy as np
@@ -138,6 +138,9 @@ class PreparedDataset:
     y_validation: np.ndarray | None = None
     validation_original_labels: pd.Series | None = None
     validation_attack_categories: pd.Series | None = None
+    # Observational metadata only; never included in predictors or sampling keys.
+    row_provenance: dict[str, pd.DataFrame] | None = None
+    imputation_medians: pd.Series | None = None
 
     @property
     def has_validation(self) -> bool:
@@ -668,6 +671,7 @@ def _clean_cicids2017_chunk(
 
     valid_feature_mask = ~numeric.isna().all(axis=1)
     stats["rows_all_features_missing_dropped"] = int((~valid_feature_mask).sum())
+    source_positions = np.flatnonzero(valid_label_mask.to_numpy())[valid_feature_mask.to_numpy()]
     numeric = numeric.loc[valid_feature_mask].reset_index(drop=True)
     labels = raw_labels.loc[valid_feature_mask].reset_index(drop=True)
 
@@ -687,10 +691,11 @@ def _clean_cicids2017_chunk(
         numeric = numeric.loc[keep].reset_index(drop=True)
         labels = labels.loc[keep].reset_index(drop=True)
         row_hashes = row_hashes[keep]
+        source_positions = source_positions[keep]
 
     y = labels.map(lambda value: 0 if value.upper() == benign_label.upper() else 1).astype(np.int8)
     categories = labels.map(lambda value: map_cicids2017_attack_category(value, benign_label))
-    source_rows = np.arange(row_offset, row_offset + len(labels), dtype=np.int64)
+    source_rows = row_offset + source_positions
     seed_mix = np.uint64((int(random_seed) * 0x9E3779B1) & 0xFFFFFFFFFFFFFFFF)
     priorities = row_hashes ^ seed_mix
 
@@ -1124,6 +1129,14 @@ def prepare_cicids2017(
         scaler=scaler,
         metadata=metadata,
         data_quality_report=quality_report,
+        row_provenance={
+            name: sampled.iloc[indices][[
+                "__source_file__", "__source_row__", "__priority__",
+                "__original_label__", "__attack_category__", "__binary_label__",
+            ]].reset_index(drop=True)
+            for name, indices in [("train", train_idx), ("validation", validation_idx), ("test", test_idx)]
+        },
+        imputation_medians=train_medians.copy(),
         X_validation=X_validation,
         y_validation=y_validation,
         validation_original_labels=validation_original,
